@@ -1,0 +1,65 @@
+
+
+@hostname = localhost
+@port = 8081
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@username = ibra
+
+@Authorization =  Bearer {{token}}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgxMzk1NTksImV4cCI6MTU3ODc0NDM1OX0.TnWf4oAU_63lF1rkjZsjcw4lb47yz413TdzcJMaJ9H4
+
+@connectedUser = ibra
+
+##
+
+// Create User 
+POST /dashboard/api/v1/users/ HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+Authorization: {{Authorization}}
+Username: {{connectedUser}}
+
+{
+	"username": "ibra5",
+	"email" : "ibra5@gmail.com",
+	"role":"Admin",
+	"password" : "pass",
+	"confirmPassword" : "pass",
+	"isActivated" : true
+}
+
+### 
+
+// get user profile
+GET /dashboard/api/v1/users/profile/{{username}} HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization}}
+Username: {{connectedUser}}
+
+
+###
+
+// get all users
+GET /dashboard/api/v1/users/ HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization}}
+Username: {{connectedUser}}
+
+
+###
+
+// Update user Basic infos
+
+PUT /dashboard/api/v1/users/profile/{{username}} HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+Authorization: {{Authorization}}
+Username: {{connectedUser}}
+
+{
+	"role" : "Super admin",
+	"isActivated" : false
+}

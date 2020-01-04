@@ -1,0 +1,36 @@
+
+
+@hostname = localhost
+@port = 8081
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgwNjgwNjUsImV4cCI6MTU3ODY3Mjg2NX0.ZG4_dBHi2jgvXrJcpEeqq3BZcZB85eltHL1uzt_83MQ
+
+@refreshToken = eyJhbGciOiJIUzI1NiJ9.aWJyYQ.xthZ45CRj8Zy9_YWpRZbpq-Nx3MFBqrdYeI-pwZGSIM
+
+##
+
+// Login get the Access and Refresh token
+GET  /dashboard/api/v1/auth/login HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+
+{
+	"userId" : {  "username": "ibra"  },
+	"password" : "pass"
+}
+
+
+###
+
+
+GET  /dashboard/api/v1/auth/refresh HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+
+{
+	"username": "ibra" ,
+	"token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgwMTE0MjUsImV4cCI6MTU3ODAxMTQyNX0.Gdq0wsT1-1HtNLIxJwnBZB60wJqtAvL5lM5PuqY0KyI",
+	"refreshToken" : "eyJhbGciOiJIUzI1NiJ9.aWJyYQ.xthZ45CRj8Zy9_YWpRZbpq-Nx3MFBqrdYeI-pwZGSIM"
+}

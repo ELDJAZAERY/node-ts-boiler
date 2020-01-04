@@ -1,0 +1,16 @@
+{
+  "db": {
+    "port": "",
+    "host": "",
+    "name": "",
+    "dbUser": "",
+    "password": ""
+  },
+  "server": {
+    "port": ""
+  },
+  "jwtConfigs": {
+    "jwtSecret": "",
+    "jwtExpires": ""
+  }
+}

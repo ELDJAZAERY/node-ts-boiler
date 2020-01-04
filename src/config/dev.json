@@ -1,0 +1,16 @@
+{
+  "db": {
+    "port": "5432",
+    "host": "localhost",
+    "name": "test",
+    "dbUser": "postgres",
+    "password": "postgres"
+  },
+  "server": {
+    "port": "8081"
+  },
+  "jwtConfigs": {
+    "jwtSecret": "U2FsdGVkX1Zx0aUWww2qoi2DmCohg9O",
+    "jwtExpires": "7d"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "db": {
+    "port": "DB_PORT",
+    "host": "DB_HOST",
+    "name": "DB_NAME",
+    "dbUser": "DB_USER",
+    "password": "DB_PASSWORD"
+  },
+  "server": {
+    "port": "SERVER_PORT"
+  },
+  "jwtConfigs": {
+    "jwtSecret": "ENVTEST",
+    "jwtExpires": "JWT_EXPIRES"
+  }
+}
