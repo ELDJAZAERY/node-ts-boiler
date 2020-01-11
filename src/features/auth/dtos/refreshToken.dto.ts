@@ -1,5 +1,5 @@
 export default class RefreshTokenDTO {
-  username: string;
+  identificator: string;
   token: string;
   refreshToken: string;
 }

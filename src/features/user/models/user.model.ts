@@ -1,5 +1,13 @@
+/**
+ *
+ * @__Abstract__USER__CLASS_
+ *
+ * ## Contains all communs (columns & function)
+ * extended by ( @_Client , @_Owner )
+ *
+ */
+
 import {
-  Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -7,8 +15,7 @@ import {
   Column,
   Index
 } from 'typeorm';
-import RoleEnum from '../enums/roles.Enum';
-import { IsAlphanumeric, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import CreateUserDTO from '../dtos/create.user.dto';
 import UpdateUserDTO from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
@@ -17,20 +24,56 @@ import { HttpStatusEnum } from '../../../shared';
 
 import PwdCrypto from '../../../utils/crypto';
 
-@Entity()
-export default class User extends BaseEntity {
-  static readonly TABLE_NAME = 'user';
-
+export default abstract class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: String;
 
   @Index({ unique: true })
   @Column({ type: 'varchar' })
-  username: String;
+  identificator: String;
 
-  @Index({ unique: true })
   @Column({ type: 'varchar' })
-  email: String;
+  designation: String;
+
+  @Column({
+    name: 'is_activated',
+    type: 'boolean',
+    nullable: false,
+    default: false
+  })
+  isActivated: boolean;
+
+  @Column({
+    name: 'is_request_visible',
+    type: 'boolean',
+    nullable: false,
+    default: true
+  })
+  isRequestVisible: boolean;
+
+  @Column({
+    name: 'is_keys_visible',
+    type: 'boolean',
+    nullable: false,
+    default: true
+  })
+  isKeysVisible: boolean;
+
+  @Column({
+    name: 'is_keys_editable',
+    type: 'boolean',
+    nullable: false,
+    default: true
+  })
+  isKeysEditable: boolean;
+
+  @Column({
+    name: 'is_historic_visible',
+    type: 'boolean',
+    nullable: false,
+    default: true
+  })
+  isHistoricVisible: boolean;
 
   @IsNotEmpty()
   @Column({ type: 'varchar' })
@@ -40,29 +83,26 @@ export default class User extends BaseEntity {
   @Column({ type: 'varchar' })
   secretKey: string;
 
-  @Column({ type: 'varchar', nullable: false, default: RoleEnum.BASIC })
-  role: RoleEnum;
-
-  @Column({ type: 'boolean', nullable: false, default: false })
-  isActivated: boolean;
-
   @CreateDateColumn()
   readonly createdAt: Date;
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @Column('json', { default: ['1'] })
+  @Column('json', { default: [] })
   refreshTokens: string[];
 
-  preSave = (createUserDTO: CreateUserDTO): Promise<any> => {
+  protected preSave = (createUserDTO: CreateUserDTO): any => {
     const {
-      username,
-      email,
+      identificator,
+      designation,
       password,
       confirmPassword,
-      role,
-      isActivated
+      isActivated,
+      isHistoricVisible,
+      isKeysEditable,
+      isKeysVisible,
+      isRequestVisible
     } = createUserDTO;
     if (password !== confirmPassword)
       return Promise.reject(
@@ -72,31 +112,43 @@ export default class User extends BaseEntity {
         )
       );
 
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    this.role = role;
+    this.identificator = identificator;
+    this.designation = designation;
     this.isActivated = isActivated;
+    this.isHistoricVisible = isHistoricVisible;
+    this.isKeysEditable = isKeysEditable;
+    this.isKeysVisible = isKeysVisible;
+    this.isRequestVisible = isRequestVisible;
+    this.password = password;
     this.cryptePWD();
 
-    return Promise.resolve(true);
+    return true;
   };
 
-  updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<User> => {
-    const { role, isActivated } = updateUserDTO;
+  protected updateBasicInfos = (updateUserDTO: UpdateUserDTO): void => {
+    const {
+      designation,
+      isActivated,
+      isHistoricVisible,
+      isKeysEditable,
+      isKeysVisible,
+      isRequestVisible
+    } = updateUserDTO;
+
+    this.designation = designation;
     this.isActivated = isActivated;
-    this.role = role;
-
-    return this.save();
+    this.isHistoricVisible = isHistoricVisible;
+    this.isKeysEditable = isKeysEditable;
+    this.isKeysVisible = isKeysVisible;
+    this.isRequestVisible = isRequestVisible;
   };
 
-  updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<User> => {
+  protected updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): any => {
     const { password, newPassword, confirmPassword } = updateUserPwdDTO;
     const oldPwd = this.decryptPWD();
     if (newPassword === confirmPassword && password === oldPwd) {
       this.password = newPassword;
       this.cryptePWD();
-      return this.save();
     } else
       return Promise.reject(
         new HttpException(
@@ -111,7 +163,7 @@ export default class User extends BaseEntity {
     return password === passDecrypted;
   };
 
-  normalize = (): User => {
+  normalize = (): void => {
     delete this.id;
     delete this.password;
     delete this.secretKey;
@@ -124,21 +176,18 @@ export default class User extends BaseEntity {
     delete this.decryptPWD;
     delete this.checkPWD;
     delete this.checkRefreshToken;
-    return this;
   };
 
-  saveRefreshToken = (refreshToken: string): Promise<User> => {
+  protected saveRefreshToken = (refreshToken: string): void => {
     this.refreshTokens.push(refreshToken);
-    return this.save();
   };
 
-  checkRefreshToken = async (refreshToken: string): Promise<boolean> => {
+  protected checkRefreshToken = (refreshToken: string): boolean => {
     const isValid = this.refreshTokens.includes(refreshToken);
     if (isValid) {
       this.refreshTokens = this.refreshTokens.filter(
         val => val !== refreshToken
       );
-      await this.save();
       return true;
     }
     return false;
@@ -146,7 +195,6 @@ export default class User extends BaseEntity {
 
   private cryptePWD = (): void => {
     const { pwdHashed, secretKeyHashed } = PwdCrypto.encrypt(this.password);
-
     this.password = pwdHashed;
     this.secretKey = secretKeyHashed;
   };

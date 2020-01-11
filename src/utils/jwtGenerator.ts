@@ -25,10 +25,10 @@ export default class JWTGenerator {
     }
   };
 
-  static readonly refreshToken = (username: String): string => {
+  static readonly refreshToken = (data: any): string => {
     const { jwtSecret = JWTGenerator.defaultSecretKey } = config.get(
       'jwtConfigs'
     );
-    return jwt.sign(username, jwtSecret);
+    return jwt.sign(data, jwtSecret);
   };
 }

@@ -10,15 +10,31 @@ import UserRolesEnum from '../enums/roles.Enum';
 class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
-  username: string;
+  identificator: String;
 
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
+  @IsString()
+  designation: String;
 
   @IsNotEmpty()
-  @IsEnum(UserRolesEnum)
-  role: UserRolesEnum;
+  @IsBoolean()
+  isActivated: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isRequestVisible: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isKeysVisible: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isKeysEditable: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isHistoricVisible: boolean;
 
   @IsNotEmpty()
   @IsString()
@@ -29,8 +45,8 @@ class CreateUserDTO {
   confirmPassword: string;
 
   @IsNotEmpty()
-  @IsBoolean()
-  isActivated: boolean;
+  @IsEnum(UserRolesEnum)
+  role: UserRolesEnum;
 }
 
 export default CreateUserDTO;

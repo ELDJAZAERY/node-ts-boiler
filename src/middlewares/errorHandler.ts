@@ -9,8 +9,10 @@ export default (
   err: HttpException,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   logger.log('error', '', err);
-  res.status(err.status || HttpStatusEnum.SERVER_ERROR).send(err.message);
+  res
+    .status(err.status || HttpStatusEnum.SERVER_ERROR)
+    .send(err.message ? err.message : err);
 };

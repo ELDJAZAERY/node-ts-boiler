@@ -1,0 +1,74 @@
+
+
+@hostname = localhost
+@port = 8081
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@identificator = ibra
+
+@Authorization =  Bearer {{token}}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgxMzk1NTksImV4cCI6MTU3ODc0NDM1OX0.TnWf4oAU_63lF1rkjZsjcw4lb47yz413TdzcJMaJ9H4
+
+@connectedUser = ibra
+
+##
+
+// Create User 
+POST /dashboard/api/v1/owner/ HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+Authorization: {{Authorization}}
+identificator: {{connectedUser}}
+
+{
+	"identificator": "ibra5",
+	"role":"Basic",
+	"password" : "pass",
+	"confirmPassword" : "pass",
+    "designation": "Not Unic name",
+	"isActivated" : true,
+	"isRequestVisible" : true,
+	"isKeysVisible" : true,
+	"isKeysEditable" : true,
+	"isHistoricVisible" : true
+}
+
+### 
+
+// get user profile
+GET /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization}}
+identificator: {{connectedUser}}
+
+
+###
+
+// get all owners
+GET /dashboard/api/v1/owner/ HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization}}
+identificator: {{connectedUser}}
+
+
+###
+
+// Update user Basic infos
+
+PUT /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
+Host: {{host}}
+Content-Type: {{contentType}}
+Authorization: {{Authorization}}
+identificator: {{connectedUser}}
+
+{
+	"role" : "Super admin",
+    "designation": "Not Unic name",
+	"isActivated" : true,
+	"isRequestVisible" : true,
+	"isKeysVisible" : true,
+	"isKeysEditable" : false,
+	"isHistoricVisible" : false,
+}

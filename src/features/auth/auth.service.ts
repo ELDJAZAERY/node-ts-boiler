@@ -1,21 +1,20 @@
-import LoginDTO, {
-  userIdWithEmail,
-  userIdWithUsername
-} from './dtos/login.dto';
-import { User } from '../user';
+import LoginDTO from './dtos/login.dto';
+
 import JWTGenerator from '../../utils/jwtGenerator';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
 import loginResponse from './interfaces/login.response';
 import RefreshTokenDTO from './dtos/refreshToken.dto';
+import { IUser, Owner, Client } from '../user';
+import UserManager from '../user/models/user.manager';
 
 export default class AuthService {
   static async login(loginDTO: LoginDTO): Promise<loginResponse> {
-    const userId: userIdWithEmail | userIdWithUsername = loginDTO.userId;
-    const password: string = loginDTO.password;
-    const user: User | undefined = await User.findOne({ ...userId });
+    const { identificator, password } = loginDTO;
 
-    if (user && user.checkPWD(password) && user.username && user.isActivated) {
+    const user: Client | Owner = await UserManager.findOne(identificator);
+
+    if (user && user.isActivated && user.checkPWD(password)) {
       return AuthService.generateTokens(user);
     }
 
@@ -39,13 +38,20 @@ export default class AuthService {
   static async refreshToken(
     refreshTokenDTO: RefreshTokenDTO
   ): Promise<loginResponse> {
-    const { username, token, refreshToken } = refreshTokenDTO;
+    const { identificator, token, refreshToken } = refreshTokenDTO;
 
-    const user: User | undefined = await User.findOne({ username });
-    const userToken: any = JWTGenerator.verify(token);
+    const user: Client | Owner = await UserManager.findOne(identificator);
+    const refresh_token_Data: any = JWTGenerator.verify(refreshToken);
+    // token should be expired
+    const tokenData: any = JWTGenerator.verify(token);
 
-    if (user && userToken.username !== username) {
-      const isValide = user.checkRefreshToken(refreshToken);
+    if (
+      user &&
+      refresh_token_Data.identificator === identificator &&
+      // token should be expired
+      tokenData.identificator === undefined
+    ) {
+      const isValide = await user.checkRefreshTokenUser(refreshToken);
       if (isValide) return AuthService.generateTokens(user);
     }
 
@@ -60,11 +66,41 @@ export default class AuthService {
     );
   }
 
-  private static async generateTokens(user: User): Promise<loginResponse> {
-    const { username, email, role, isActivated } = user;
-    const token = JWTGenerator.signe({ username, email, role, isActivated });
-    const refreshToken = JWTGenerator.refreshToken(username);
-    await user.saveRefreshToken(refreshToken);
+  private static async generateTokens(
+    user: Owner | Client
+  ): Promise<loginResponse> {
+    /**
+     * the Client obj is instance of Owner
+     * so user instanceof Owner it is always true
+     */
+    const isOwner = !(user instanceof Client);
+    const {
+      identificator,
+      role,
+      isActivated,
+      isRequestVisible,
+      isKeysVisible,
+      isKeysEditable,
+      isHistoricVisible
+    } = user;
+    const token = JWTGenerator.signe({
+      identificator,
+      isOwner,
+      role,
+      isActivated,
+      isRequestVisible,
+      isKeysVisible,
+      isKeysEditable,
+      isHistoricVisible
+    });
+
+    const refreshToken = JWTGenerator.refreshToken({
+      identificator,
+      isOwner,
+      role
+    });
+
+    await user.saveRefreshTokenUser(refreshToken);
     return { token, refreshToken };
   }
 }

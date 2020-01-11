@@ -8,13 +8,29 @@ import {
 import UserRolesEnum from '../enums/roles.Enum';
 
 class UpdateUserDTO {
+  @IsString()
   @IsNotEmpty()
-  @IsEnum(UserRolesEnum)
-  role: UserRolesEnum;
+  designation: string;
 
   @IsNotEmpty()
   @IsBoolean()
   isActivated: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isHistoricVisible: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isKeysEditable: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isKeysVisible: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isRequestVisible: boolean;
 }
 
 export default UpdateUserDTO;

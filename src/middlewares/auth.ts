@@ -2,28 +2,30 @@ import { Request, Response, NextFunction } from 'express';
 import HttpException from '../exceptions/httpException';
 import { HttpStatusEnum } from '../shared';
 import JWTGenerator from '../utils/jwtGenerator';
-import { User } from '../features/user';
+import { User, IUser } from '../features/user';
+import UserManager from '../features/user/models/user.manager';
 
 export default async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const tokenHeader =
-    req.headers['x-access-token'] || req.headers['authorization'];
-  const usernameFromHeaders = req.headers['username'];
-  const token: string = (tokenHeader as string)
-    ? (tokenHeader as string).split(' ')[0] === 'Bearer'
-      ? (tokenHeader as string).split(' ')[1]
-      : `is't a Bearer Token`
-    : 'invalide Token';
-  const { username: usernameFromToken } = JWTGenerator.verify(token);
-  const user: User | undefined = await User.findOne({
-    username: usernameFromToken
-  });
-  if (user && usernameFromToken === usernameFromHeaders) {
-    const { username, role, isActivated } = user;
-    (req as any).user = { username, role, isActivated };
+  const tokenHeader: string = (req.headers['x-access-token'] ||
+    req.headers['authorization']) as string;
+
+  const idFromHeaders = req.headers['identificator'];
+
+  const token: string =
+    tokenHeader &&
+    tokenHeader.split(' ')[0] === 'Bearer' &&
+    tokenHeader.split(' ')[1]
+      ? tokenHeader.split(' ')[1]
+      : 'invalide Token';
+
+  const { identificator: idFromToken } = JWTGenerator.verify(token);
+  const iUser: IUser | undefined = await UserManager.getIUser(idFromToken);
+  if (iUser && idFromToken === idFromHeaders) {
+    (req as any).iUser = iUser;
     return next();
   }
 
