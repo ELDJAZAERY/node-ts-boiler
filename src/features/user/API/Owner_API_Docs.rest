@@ -5,13 +5,15 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = ibra
+@identificator = ibra3
 
-@Authorization =  Bearer {{token}}
+@Authorization_Token =  Bearer {{token}}
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgxMzk1NTksImV4cCI6MTU3ODc0NDM1OX0.TnWf4oAU_63lF1rkjZsjcw4lb47yz413TdzcJMaJ9H4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlzQWN0aXZhdGVkIjp0cnVlLCJpc1JlcXVlc3RWaXNpYmxlIjp0cnVlLCJpc0tleXNWaXNpYmxlIjp0cnVlLCJpc0tleXNFZGl0YWJsZSI6dHJ1ZSwiaXNIaXN0b3JpY1Zpc2libGUiOnRydWUsImlhdCI6MTU3ODc4NDUwOSwiZXhwIjoxNTc5Mzg5MzA5fQ.FIh5vH66T4jbdNijQ0ugTvuxtZI-Z5yaAk_ce_pidAQ
 
 @connectedUser = ibra
+
+
 
 ##
 
@@ -19,11 +21,11 @@
 POST /dashboard/api/v1/owner/ HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
-Authorization: {{Authorization}}
+Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "ibra5",
+	"identificator": "ibra6",
 	"role":"Basic",
 	"password" : "pass",
 	"confirmPassword" : "pass",
@@ -35,13 +37,18 @@ identificator: {{connectedUser}}
 	"isHistoricVisible" : true
 }
 
+
+
+
 ### 
 
 // get user profile
 GET /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
-Authorization: {{Authorization}}
+Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
+
+
 
 
 ###
@@ -49,8 +56,10 @@ identificator: {{connectedUser}}
 // get all owners
 GET /dashboard/api/v1/owner/ HTTP/1.1
 Host: {{host}}
-Authorization: {{Authorization}}
+Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
+
+
 
 
 ###
@@ -60,7 +69,7 @@ identificator: {{connectedUser}}
 PUT /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
-Authorization: {{Authorization}}
+Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
@@ -69,6 +78,6 @@ identificator: {{connectedUser}}
 	"isActivated" : true,
 	"isRequestVisible" : true,
 	"isKeysVisible" : true,
-	"isKeysEditable" : false,
-	"isHistoricVisible" : false,
+	"isKeysEditable" : true,
+	"isHistoricVisible" : true
 }

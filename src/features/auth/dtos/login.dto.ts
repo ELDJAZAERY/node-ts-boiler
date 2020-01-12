@@ -1,13 +1,8 @@
-import {
-  IsNotEmpty,
-  IsAlphanumeric,
-  IsNotEmptyObject,
-  IsObject
-} from 'class-validator';
+import { IsNotEmpty, IsAlphanumeric, IsString } from 'class-validator';
 
 export default class LoginDTO {
-  @IsObject()
-  @IsNotEmptyObject()
+  @IsNotEmpty()
+  @IsString()
   identificator: string;
 
   @IsAlphanumeric()

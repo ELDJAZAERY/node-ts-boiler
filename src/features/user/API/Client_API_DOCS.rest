@@ -5,61 +5,71 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@username = ibra
+@identificator = cibra1
 
-@Authorization =  Bearer {{token}}
+@Authorization_Token =  Bearer {{token}}
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgxMzk1NTksImV4cCI6MTU3ODc0NDM1OX0.TnWf4oAU_63lF1rkjZsjcw4lb47yz413TdzcJMaJ9H4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlzQWN0aXZhdGVkIjp0cnVlLCJpc1JlcXVlc3RWaXNpYmxlIjp0cnVlLCJpc0tleXNWaXNpYmxlIjp0cnVlLCJpc0tleXNFZGl0YWJsZSI6dHJ1ZSwiaXNIaXN0b3JpY1Zpc2libGUiOnRydWUsImlhdCI6MTU3ODc4NDUwOSwiZXhwIjoxNTc5Mzg5MzA5fQ.FIh5vH66T4jbdNijQ0ugTvuxtZI-Z5yaAk_ce_pidAQ
 
 @connectedUser = ibra
+
 
 ##
 
 // Create User 
-POST /dashboard/api/v1/users/ HTTP/1.1
+POST /dashboard/api/v1/client/ HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
-Authorization: {{Authorization}}
-Username: {{connectedUser}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
 
 {
-	"username": "ibra5",
-	"email" : "ibra5@gmail.com",
-	"role":"Admin",
+	"identificator": "cibra1",
+	"role":"Super admin",
 	"password" : "pass",
 	"confirmPassword" : "pass",
-	"isActivated" : true
+    "designation": "Not Unic name",
+	"isActivated" : true,
+	"isRequestVisible" : true,
+	"isKeysVisible" : true,
+	"isKeysEditable" : true,
+	"isHistoricVisible" : true
 }
 
 ### 
 
 // get user profile
-GET /dashboard/api/v1/users/profile/{{username}} HTTP/1.1
+GET /dashboard/api/v1/client/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
-Authorization: {{Authorization}}
-Username: {{connectedUser}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
 
 
 ###
 
-// get all users
-GET /dashboard/api/v1/users/ HTTP/1.1
+// get all owners
+GET /dashboard/api/v1/client/ HTTP/1.1
 Host: {{host}}
-Authorization: {{Authorization}}
-Username: {{connectedUser}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
 
 
 ###
 
 // Update user Basic infos
 
-PUT /dashboard/api/v1/users/profile/{{username}} HTTP/1.1
+PUT /dashboard/api/v1/client/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
-Authorization: {{Authorization}}
-Username: {{connectedUser}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
 
 {
 	"role" : "Super admin",
-	"isActivated" : false
+    "designation": "Not Unic name",
+	"isActivated" : true,
+	"isRequestVisible" : true,
+	"isKeysVisible" : false,
+	"isKeysEditable" : true,
+	"isHistoricVisible" : true
 }

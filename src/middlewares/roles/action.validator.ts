@@ -2,12 +2,11 @@ import * as express from 'express';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
 import UserRolesEnum from '../../features/user/enums/roles.Enum';
-import { User } from '../../features/user';
-import ActionRoleStratagies from './action.enum';
+import { IUser, Owner, Client } from '../../features/user';
+import ActionRoleEnum from './action.enum';
+import UserManager from '../../features/user/models/user.manager';
 
-function roleValidationMiddleware<T>(
-  action: ActionRoleStratagies
-): express.RequestHandler {
+function actionValidator<T>(action: ActionRoleEnum): express.RequestHandler {
   return async (req: any, res: any, next: any): Promise<void> => {
     if (await checkRole(req, res, action)) {
       next();
@@ -25,34 +24,29 @@ function roleValidationMiddleware<T>(
 const checkRole = async (
   req: any,
   res: any,
-  action: ActionRoleStratagies
+  action: ActionRoleEnum
 ): Promise<boolean> => {
-  const user = req.user;
-  if (!user.isActivated) {
-    return Promise.reject(
-      new HttpException(
-        HttpStatusEnum.FORBIDDEN,
-        'Permission denied, Your account has been deactivated, please contact your admin'
-      )
-    );
-  }
+  const iUser: IUser = req.iUser;
 
-  const userConcernedByAction: string = extractUserConcernedByAction_username(
-    req
-  );
+  await checkIsActivated(iUser);
+
+  const userIdentConcernedByAction: string = extractUserConcernedByAction(req);
 
   switch (action) {
-    case ActionRoleStratagies.SUPER:
-      return SuperActionValidator(user);
+    case ActionRoleEnum.SUPER_OWNER:
+      return SuperActionValidator(iUser);
 
-    case ActionRoleStratagies.ADMIN: {
-      const permited = await AdminActionValidator(user, userConcernedByAction);
+    case ActionRoleEnum.ADMIN_OWNER: {
+      const permited = await AdminActionValidator(
+        iUser,
+        userIdentConcernedByAction
+      );
       return permited;
     }
-    case ActionRoleStratagies.SELFISH:
-      return SelfishActionValidator(user, userConcernedByAction);
+    case ActionRoleEnum.SELFISH:
+      return SelfishActionValidator(iUser, userIdentConcernedByAction);
 
-    case ActionRoleStratagies.BASIC:
+    case ActionRoleEnum.BASIC_OWNER:
       return true;
 
     default:
@@ -60,38 +54,54 @@ const checkRole = async (
   }
 };
 
-const extractUserConcernedByAction_username = (req: any): string => {
-  const { username: usernameFromParams } = req.params;
-  const { username: usernameFromBody } = req.body;
-
-  return (usernameFromBody || usernameFromParams) as string;
+const checkIsActivated = (iUser: IUser): Promise<boolean> => {
+  return iUser && iUser.isActivated
+    ? Promise.resolve(true)
+    : Promise.reject(
+        new HttpException(
+          HttpStatusEnum.FORBIDDEN,
+          'Permission denied, Your account has been deactivated, please contact your admin'
+        )
+      );
 };
 
-const SuperActionValidator = (user: any): boolean => {
-  return user && user.isActivated && user.role === UserRolesEnum.SUPER;
+const extractUserConcernedByAction = (req: any): string => {
+  const { identificator: identificatorFromParams } = req.params;
+  const { identificator: identificatorFromBody } = req.body;
+
+  return (identificatorFromBody || identificatorFromParams) as string;
+};
+
+const SuperActionValidator = (iUser: IUser): boolean => {
+  return iUser && iUser.isActivated && iUser.role === UserRolesEnum.SUPER;
 };
 
 const AdminActionValidator = async (
-  user: any,
-  userConcernedByAction: string
+  iUser: IUser,
+  userIdentConcernedByAction: string
 ): Promise<boolean> => {
-  const userConcerned: User | undefined = await User.findOne({
-    username: userConcernedByAction
-  });
+  const userConcerned: Owner | Client = await UserManager.findOne(
+    userIdentConcernedByAction
+  );
   return (
-    user &&
-    user.isActivated &&
-    user.role === UserRolesEnum.ADMIN &&
+    iUser &&
+    iUser.isActivated &&
+    iUser.role === UserRolesEnum.ADMIN &&
     !!userConcerned &&
-    userConcerned.role != UserRolesEnum.SUPER
+    userConcerned.role !== UserRolesEnum.SUPER &&
+    userConcerned.role !== UserRolesEnum.ADMIN
   );
 };
 
 const SelfishActionValidator = (
-  user: any,
-  userConcernedByAction: string
+  iUser: IUser,
+  userIdentConcernedByAction: string
 ): boolean => {
-  return user && user.isActivated && user.username === userConcernedByAction;
+  return (
+    iUser &&
+    iUser.isActivated &&
+    iUser.identificator === userIdentConcernedByAction
+  );
 };
 
-export default roleValidationMiddleware;
+export default actionValidator;

@@ -51,7 +51,7 @@ export default class AuthService {
       // token should be expired
       tokenData.identificator === undefined
     ) {
-      const isValide = await user.checkRefreshTokenUser(refreshToken);
+      const isValide = await user.checkRefreshToken(refreshToken);
       if (isValide) return AuthService.generateTokens(user);
     }
 
@@ -100,7 +100,7 @@ export default class AuthService {
       role
     });
 
-    await user.saveRefreshTokenUser(refreshToken);
+    await user.saveRefreshToken(refreshToken);
     return { token, refreshToken };
   }
 }

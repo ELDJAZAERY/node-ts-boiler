@@ -13,29 +13,34 @@ export default class Owner extends User {
   @Column({ type: 'varchar', nullable: false, default: RoleEnum.BASIC })
   role: RoleEnum;
 
-  preSaveUser = (createUserDTO: CreateUserDTO): any => {
-    this.preSave(createUserDTO);
+  preSave = (createUserDTO: CreateUserDTO): any => {
+    this.preSaveUser(createUserDTO);
     this.role = createUserDTO.role;
   };
 
-  updateBasicInfosUser = (updateUserDTO: UpdateUserDTO): Promise<Owner> => {
-    this.updateBasicInfos(updateUserDTO);
+  updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Owner> => {
+    this.updateBasicInfosUser(updateUserDTO);
     return this.save();
   };
 
-  updatePWDUser = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Owner> => {
-    this.updatePWD(updateUserPwdDTO);
+  updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Owner> => {
+    this.updatePWDUser(updateUserPwdDTO);
     return this.save();
   };
 
-  saveRefreshTokenUser = (refreshToken: string): Promise<Owner> => {
-    this.saveRefreshToken(refreshToken);
+  saveRefreshToken = (refreshToken: string): Promise<Owner> => {
+    this.saveRefreshTokenUser(refreshToken);
     return this.save();
   };
 
-  checkRefreshTokenUser = async (refreshToken: string): Promise<Boolean> => {
-    const isValid: boolean = this.checkRefreshToken(refreshToken);
+  checkRefreshToken = async (refreshToken: string): Promise<Boolean> => {
+    const isValid: boolean = this.checkRefreshTokenUser(refreshToken);
     if (isValid) await this.save();
     return isValid;
+  };
+
+  normalize = (): Owner => {
+    this.normalizeUser();
+    return this;
   };
 }

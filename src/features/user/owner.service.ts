@@ -4,12 +4,14 @@ import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
 import Owner from './models/owner.model';
 import { Not } from 'typeorm';
+import UserManager from './models/user.manager';
 
 export default class OwnerService {
   static createOwner = async (createUserDTO: CreateUserDTO): Promise<Owner> => {
     let owner: Owner = new Owner();
-    owner.preSaveUser(createUserDTO);
+    owner.preSave(createUserDTO);
     try {
+      await UserManager.idValidator(createUserDTO.identificator);
       owner = await owner.save();
       return owner;
     } catch {
@@ -26,10 +28,10 @@ export default class OwnerService {
     identificator: string,
     updateUserDTO: UpdateUserDTO
   ): Promise<Owner> => {
-    let owner: Owner | undefined = await Owner.findOne(identificator);
+    let owner: Owner | undefined = await Owner.findOne({ identificator });
 
     if (owner) {
-      owner = await owner.updateBasicInfosUser(updateUserDTO);
+      owner = await owner.updateBasicInfos(updateUserDTO);
       return owner;
     }
 
@@ -41,11 +43,13 @@ export default class OwnerService {
   static getAllOwners = async (
     identificator: string
   ): Promise<Owner[] | undefined> => {
-    return Owner.find({ identificator: Not(identificator) });
+    let owners = await Owner.find({ identificator: Not(identificator) });
+    owners = owners.map(owner => owner.normalize());
+    return owners;
   };
 
   static getOwner = async (identificator: any): Promise<Owner> => {
-    const owner: Owner | undefined = await Owner.findOne(identificator);
+    const owner: Owner | undefined = await Owner.findOne({ identificator });
 
     if (owner) return owner;
 

@@ -25,12 +25,16 @@ export default class UserManager {
   static getIUser = async (
     identificator: string
   ): Promise<IUser | undefined> => {
-    const isOwnerUser: Owner | undefined = await Owner.findOne(identificator);
+    const isOwnerUser: Owner | undefined = await Owner.findOne({
+      identificator
+    });
     if (isOwnerUser) {
       isOwnerUser.normalize();
       return { ...isOwnerUser, isOwner: true };
     } else {
-      const isClient: Client | undefined = await Client.findOne(identificator);
+      const isClient: Client | undefined = await Client.findOne({
+        identificator
+      });
       if (isClient) {
         isClient.normalize();
         return { ...isClient, isOwner: false };
@@ -39,12 +43,14 @@ export default class UserManager {
   };
 
   static findOne = async (identificator: string): Promise<Owner | Client> => {
-    const ownerUser: Owner | undefined = await Owner.findOne(identificator);
+    const ownerUser: Owner | undefined = await Owner.findOne({ identificator });
     if (ownerUser) {
       return ownerUser;
     }
 
-    const clientUser: Client | undefined = await Client.findOne(identificator);
+    const clientUser: Client | undefined = await Client.findOne({
+      identificator
+    });
     if (clientUser) {
       return clientUser;
     }
@@ -52,5 +58,19 @@ export default class UserManager {
     return Promise.reject(
       new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')
     );
+  };
+
+  static idValidator = async (identificator: String): Promise<boolean> => {
+    const user: IUser | undefined = await UserManager.getIUser(
+      identificator as string
+    );
+    return user === undefined
+      ? true
+      : Promise.reject(
+          new HttpException(
+            HttpStatusEnum.BAD_REQUEST,
+            'Identifier is already used'
+          )
+        );
   };
 }

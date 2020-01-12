@@ -92,7 +92,7 @@ export default abstract class User extends BaseEntity {
   @Column('json', { default: [] })
   refreshTokens: string[];
 
-  protected preSave = (createUserDTO: CreateUserDTO): any => {
+  protected preSaveUser = (createUserDTO: CreateUserDTO): any => {
     const {
       identificator,
       designation,
@@ -125,7 +125,7 @@ export default abstract class User extends BaseEntity {
     return true;
   };
 
-  protected updateBasicInfos = (updateUserDTO: UpdateUserDTO): void => {
+  protected updateBasicInfosUser = (updateUserDTO: UpdateUserDTO): void => {
     const {
       designation,
       isActivated,
@@ -143,7 +143,7 @@ export default abstract class User extends BaseEntity {
     this.isRequestVisible = isRequestVisible;
   };
 
-  protected updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): any => {
+  protected updatePWDUser = (updateUserPwdDTO: UpdateUserPwdDTO): any => {
     const { password, newPassword, confirmPassword } = updateUserPwdDTO;
     const oldPwd = this.decryptPWD();
     if (newPassword === confirmPassword && password === oldPwd) {
@@ -163,26 +163,26 @@ export default abstract class User extends BaseEntity {
     return password === passDecrypted;
   };
 
-  normalize = (): void => {
+  protected normalizeUser = (): void => {
     delete this.id;
     delete this.password;
     delete this.secretKey;
     delete this.save;
-    delete this.preSave;
-    delete this.updateBasicInfos;
-    delete this.updatePWD;
-    delete this.normalize;
+    delete this.preSaveUser;
+    delete this.updateBasicInfosUser;
+    delete this.updatePWDUser;
+    delete this.normalizeUser;
     delete this.cryptePWD;
     delete this.decryptPWD;
     delete this.checkPWD;
-    delete this.checkRefreshToken;
+    delete this.checkRefreshTokenUser;
   };
 
-  protected saveRefreshToken = (refreshToken: string): void => {
+  protected saveRefreshTokenUser = (refreshToken: string): void => {
     this.refreshTokens.push(refreshToken);
   };
 
-  protected checkRefreshToken = (refreshToken: string): boolean => {
+  protected checkRefreshTokenUser = (refreshToken: string): boolean => {
     const isValid = this.refreshTokens.includes(refreshToken);
     if (isValid) {
       this.refreshTokens = this.refreshTokens.filter(

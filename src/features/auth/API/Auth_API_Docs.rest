@@ -5,9 +5,9 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgwNjgwNjUsImV4cCI6MTU3ODY3Mjg2NX0.ZG4_dBHi2jgvXrJcpEeqq3BZcZB85eltHL1uzt_83MQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlzQWN0aXZhdGVkIjp0cnVlLCJpc1JlcXVlc3RWaXNpYmxlIjp0cnVlLCJpc0tleXNWaXNpYmxlIjp0cnVlLCJpc0tleXNFZGl0YWJsZSI6dHJ1ZSwiaXNIaXN0b3JpY1Zpc2libGUiOnRydWUsImlhdCI6MTU3ODc4NDUwOSwiZXhwIjoxNTc5Mzg5MzA5fQ.FIh5vH66T4jbdNijQ0ugTvuxtZI-Z5yaAk_ce_pidAQ
 
-@refreshToken = eyJhbGciOiJIUzI1NiJ9.aWJyYQ.xthZ45CRj8Zy9_YWpRZbpq-Nx3MFBqrdYeI-pwZGSIM
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlhdCI6MTU3ODc4NDUwOX0.Us0oGhEKr7BZxpZ43X9xd6CYgvOJfantKy5NQ2MAPRY
 
 ##
 
@@ -17,7 +17,7 @@ Host: {{host}}
 Content-Type: {{contentType}}
 
 {
-	"userId" : {  "username": "ibra"  },
+	"identificator" : "ibra",
 	"password" : "pass"
 }
 
@@ -30,7 +30,7 @@ Host: {{host}}
 Content-Type: {{contentType}}
 
 {
-	"username": "ibra" ,
-	"token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImlicmEiLCJlbWFpbCI6ImlicmFAZ21haWwuY29tIiwicm9sZSI6IlN1cGVyIGFkbWluIiwiaXNBY3RpdmF0ZWQiOmZhbHNlLCJpYXQiOjE1NzgwMTE0MjUsImV4cCI6MTU3ODAxMTQyNX0.Gdq0wsT1-1HtNLIxJwnBZB60wJqtAvL5lM5PuqY0KyI",
-	"refreshToken" : "eyJhbGciOiJIUzI1NiJ9.aWJyYQ.xthZ45CRj8Zy9_YWpRZbpq-Nx3MFBqrdYeI-pwZGSIM"
+	"identificator": "ibra" ,
+	"token" : "eyJhbGcieyJ1c2VybmFtZyI",
+	"refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlhdCI6MTU3ODc4NjE1Nn0.CglfsAPBIaqXNuKnoJO4d35__XB66WESKPQield6BT4"
 }

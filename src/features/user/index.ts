@@ -28,7 +28,7 @@ export { default as Owner } from './models/owner.model';
 export { default as Client } from './models/client.model';
 export { default as IUser } from './interfaces/Iuser.interface';
 export { default as OwnerController } from './owner.controller';
-export { default as ClientController } from './owner.controller';
+export { default as ClientController } from './client.controller';
 export { default as AuthUser } from './interfaces/auth.user.interface';
 export { default as CreateUserDTO } from './dtos/create.user.dto';
 export { default as UpdateUserDTO } from './dtos/update.user.dto';

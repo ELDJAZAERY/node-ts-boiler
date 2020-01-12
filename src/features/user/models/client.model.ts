@@ -16,29 +16,35 @@ export default class Client extends User {
   @Column()
   clients: string;
 
-  preSaveUser = (createUserDTO: CreateUserDTO): any => {
-    this.preSave(createUserDTO);
+  preSave = (createUserDTO: CreateUserDTO): any => {
+    this.preSaveUser(createUserDTO);
     this.role = createUserDTO.role;
+    this.clients = 'no clients yet';
   };
 
-  updateBasicInfosUser = (updateUserDTO: UpdateUserDTO): Promise<Client> => {
-    this.updateBasicInfos(updateUserDTO);
+  updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Client> => {
+    this.updateBasicInfosUser(updateUserDTO);
     return this.save();
   };
 
-  updatePWDUser = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Client> => {
-    this.updatePWD(updateUserPwdDTO);
+  updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Client> => {
+    this.updatePWDUser(updateUserPwdDTO);
     return this.save();
   };
 
-  saveRefreshTokenUser = (refreshToken: string): Promise<Client> => {
-    this.saveRefreshToken(refreshToken);
+  saveRefreshToken = (refreshToken: string): Promise<Client> => {
+    this.saveRefreshTokenUser(refreshToken);
     return this.save();
   };
 
-  checkRefreshTokenUser = async (refreshToken: string): Promise<Boolean> => {
-    const isValid: boolean = this.checkRefreshToken(refreshToken);
+  checkRefreshToken = async (refreshToken: string): Promise<Boolean> => {
+    const isValid: boolean = this.checkRefreshTokenUser(refreshToken);
     if (isValid) await this.save();
     return isValid;
+  };
+
+  normalize = (): Client => {
+    this.normalizeUser();
+    return this;
   };
 }

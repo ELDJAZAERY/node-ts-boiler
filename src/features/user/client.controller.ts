@@ -50,7 +50,7 @@ class ClientController implements Controller {
   }
 
   async getAllClient(req: Request, res: Response): Promise<void> {
-    const { identificator } = (req as any).user;
+    const { identificator } = (req as any).iUser;
     const clients = await ClientService.getAllClients(identificator);
     res.status(HttpStatusEnum.SUCCESS).send(clients);
   }
