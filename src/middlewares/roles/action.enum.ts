@@ -1,7 +1,7 @@
 const enum ActionRoleEnum {
   /**
    * @SELFISH_PRIVATE_ACTION
-   * Concerned exclusively with oneself with ( designation )
+   * Concerned exclusively with oneself ( designation, change password ...etc )
    *
    * Action from user to his profile @only
    * either @Admin or @Super_admin can't do this action to any account except his owner profile

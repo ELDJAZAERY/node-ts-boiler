@@ -30,24 +30,43 @@ const checkRole = async (
 
   await checkIsActivated(iUser);
 
-  const userIdentConcernedByAction: string = extractUserConcernedByAction(req);
+  const userConcernedByAction: string = extractUserConcernedByAction(req);
 
   switch (action) {
     case ActionRoleEnum.SUPER_OWNER:
-      return SuperActionValidator(iUser);
+      return iUser && iUser.role === UserRolesEnum.SUPER;
 
     case ActionRoleEnum.ADMIN_OWNER: {
-      const permited = await AdminActionValidator(
-        iUser,
-        userIdentConcernedByAction
-      );
+      const permited = await AdminActionValidator(iUser, userConcernedByAction);
       return permited;
     }
     case ActionRoleEnum.SELFISH:
-      return SelfishActionValidator(iUser, userIdentConcernedByAction);
+      return SelfishActionValidator(iUser, userConcernedByAction);
 
     case ActionRoleEnum.BASIC_OWNER:
       return true;
+
+    case ActionRoleEnum.SUPER_CLIENT:
+      return (
+        iUser &&
+        iUser.isKeysVisible &&
+        iUser.isKeysEditable &&
+        iUser.isKeysEditable &&
+        iUser.isRequestVisible &&
+        iUser.isHistoricVisible
+      );
+
+    case ActionRoleEnum.FETCH_KEYS:
+      return iUser && iUser.isKeysVisible;
+
+    case ActionRoleEnum.EDIT_KEYS:
+      return iUser && iUser.isKeysEditable;
+
+    case ActionRoleEnum.FETCH_REQUESTS:
+      return iUser && iUser.isRequestVisible;
+
+    case ActionRoleEnum.FETCH_HISTORIC:
+      return iUser && iUser.isHistoricVisible;
 
     default:
       return false;
@@ -72,20 +91,15 @@ const extractUserConcernedByAction = (req: any): string => {
   return (identificatorFromBody || identificatorFromParams) as string;
 };
 
-const SuperActionValidator = (iUser: IUser): boolean => {
-  return iUser && iUser.isActivated && iUser.role === UserRolesEnum.SUPER;
-};
-
 const AdminActionValidator = async (
   iUser: IUser,
-  userIdentConcernedByAction: string
+  userConcernedByAction: string
 ): Promise<boolean> => {
   const userConcerned: Owner | Client = await UserManager.findOne(
-    userIdentConcernedByAction
+    userConcernedByAction
   );
   return (
     iUser &&
-    iUser.isActivated &&
     iUser.role === UserRolesEnum.ADMIN &&
     !!userConcerned &&
     userConcerned.role !== UserRolesEnum.SUPER &&
@@ -95,13 +109,9 @@ const AdminActionValidator = async (
 
 const SelfishActionValidator = (
   iUser: IUser,
-  userIdentConcernedByAction: string
+  userConcernedByAction: string
 ): boolean => {
-  return (
-    iUser &&
-    iUser.isActivated &&
-    iUser.identificator === userIdentConcernedByAction
-  );
+  return iUser && iUser.identificator === userConcernedByAction;
 };
 
 export default actionValidator;

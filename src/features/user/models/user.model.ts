@@ -176,6 +176,7 @@ export default abstract class User extends BaseEntity {
     delete this.decryptPWD;
     delete this.checkPWD;
     delete this.checkRefreshTokenUser;
+    delete this.refreshTokens;
   };
 
   protected saveRefreshTokenUser = (refreshToken: string): void => {

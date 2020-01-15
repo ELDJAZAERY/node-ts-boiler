@@ -6,8 +6,8 @@ import UpdateUserDTO from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
 import { Owner } from '.';
 import UpdateUserPwdDTO from './dtos/update.user.password.dto';
-// import actionValidator from '../../middlewares/roles/action.validator';
-// import ActionRoleStratagies from '../../middlewares/roles/action.enum';
+import actionValidator from '../../middlewares/roles/action.validator';
+import ActionRoleEnum from '../../middlewares/roles/action.enum';
 
 class OwnerController implements Controller {
   path = '/owner';
@@ -21,7 +21,7 @@ class OwnerController implements Controller {
   initializeRoutes(): void {
     this.route.get(
       '/',
-      // actionValidator(ActionRoleStratagies.BASIC),
+      actionValidator(ActionRoleEnum.BASIC_OWNER),
       this.getAllOwner
     );
     this.route.get(
@@ -31,20 +31,20 @@ class OwnerController implements Controller {
     );
     this.route.post(
       '/',
+      actionValidator(ActionRoleEnum.SUPER_OWNER),
       validationMiddleware(CreateUserDTO),
-      // actionValidator(ActionRoleStratagies.SUPER),
       this.createOwner
     );
     this.route.put(
       '/profile/:identificator',
+      actionValidator(ActionRoleEnum.SELFISH),
       validationMiddleware(UpdateUserDTO),
-      // actionValidator(ActionRoleStratagies.SUPER),
       this.updateOwner
     );
     this.route.put(
       '/profile/:identificator/pwd/change',
+      actionValidator(ActionRoleEnum.SELFISH),
       validationMiddleware(UpdateUserPwdDTO),
-      // actionValidator(ActionRoleStratagies.SUPER),
       this.updatePwd
     );
   }
