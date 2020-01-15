@@ -1,10 +1,11 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 import RoleEnum from '../enums/roles.Enum';
 import User from './user.model';
 import CreateUserDTO from '../dtos/create.user.dto';
 import UpdateUserDTO from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
+import { Group } from '../../keys';
 
 @Entity({ name: 'client_access' })
 export default class Client extends User {
@@ -13,13 +14,15 @@ export default class Client extends User {
   @Column({ type: 'varchar', nullable: false, default: RoleEnum.BASIC })
   role: RoleEnum;
 
-  @Column()
-  clients: string;
+  @OneToMany(
+    type => Group,
+    group => group.client
+  )
+  groups: Group[];
 
   preSave = (createUserDTO: CreateUserDTO): any => {
     this.preSaveUser(createUserDTO);
     this.role = createUserDTO.role;
-    this.clients = 'no clients yet';
   };
 
   updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Client> => {

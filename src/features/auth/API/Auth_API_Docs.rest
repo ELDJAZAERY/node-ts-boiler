@@ -17,7 +17,7 @@ Host: {{host}}
 Content-Type: {{contentType}}
 
 {
-	"identificator" : "ibra3",
+	"identificator" : "cibra1",
 	"password" : "pass"
 }
 

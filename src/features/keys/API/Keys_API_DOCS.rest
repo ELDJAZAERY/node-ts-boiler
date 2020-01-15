@@ -1,0 +1,27 @@
+
+@hostname = localhost
+@port = 8081
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@identificator = cibra1
+
+@Authorization_Token =  Bearer {{token}}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiY2licmExIiwiaXNPd25lciI6ZmFsc2UsInJvbGUiOiJTdXBlciBhZG1pbiIsImlzQWN0aXZhdGVkIjp0cnVlLCJpc1JlcXVlc3RWaXNpYmxlIjp0cnVlLCJpc0tleXNWaXNpYmxlIjp0cnVlLCJpc0tleXNFZGl0YWJsZSI6dHJ1ZSwiaXNIaXN0b3JpY1Zpc2libGUiOnRydWUsImlhdCI6MTU3OTExNzA3NSwiZXhwIjoxNTc5NzIxODc1fQ.Jgg1xM844v55s7pEcFg6vcnCXl900wCbuuvugHANemY
+
+@connectedUser = cibra1
+
+###
+
+
+
+
+GET /dashboard/api/v1/key HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
+
+
+
+
