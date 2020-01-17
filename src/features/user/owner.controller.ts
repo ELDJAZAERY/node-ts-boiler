@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { Controller, HttpStatusEnum } from '../../shared';
 import OwnerService from './owner.service';
-import CreateUserDTO from './dtos/create.user.dto';
+import { CreateOwnerDTO } from './dtos/create.user.dto';
 import UpdateUserDTO from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
 import { Owner } from '.';
@@ -31,20 +31,20 @@ class OwnerController implements Controller {
     );
     this.route.post(
       '/',
+      validationMiddleware(CreateOwnerDTO),
       actionValidator(ActionRoleEnum.SUPER_OWNER),
-      validationMiddleware(CreateUserDTO),
       this.createOwner
     );
     this.route.put(
       '/profile/:identificator',
-      actionValidator(ActionRoleEnum.SELFISH),
       validationMiddleware(UpdateUserDTO),
+      actionValidator(ActionRoleEnum.SELFISH),
       this.updateOwner
     );
     this.route.put(
       '/profile/:identificator/pwd/change',
-      actionValidator(ActionRoleEnum.SELFISH),
       validationMiddleware(UpdateUserPwdDTO),
+      actionValidator(ActionRoleEnum.SELFISH),
       this.updatePwd
     );
   }
@@ -62,8 +62,8 @@ class OwnerController implements Controller {
   }
 
   async createOwner(req: Request, res: Response): Promise<void> {
-    const createUserDTO: CreateUserDTO = req.body;
-    const createdOwner: Owner = await OwnerService.createOwner(createUserDTO);
+    const createOwnerDTO: CreateOwnerDTO = req.body;
+    const createdOwner: Owner = await OwnerService.createOwner(createOwnerDTO);
     res.status(HttpStatusEnum.CREATED).send(createdOwner.normalize());
   }
 

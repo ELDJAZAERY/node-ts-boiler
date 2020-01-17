@@ -1,13 +1,7 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsBoolean,
-  IsEmail,
-  IsEnum
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean, IsEnum } from 'class-validator';
 import UserRolesEnum from '../enums/roles.Enum';
 
-class CreateUserDTO {
+export class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
   identificator: String;
@@ -49,4 +43,10 @@ class CreateUserDTO {
   role: UserRolesEnum;
 }
 
-export default CreateUserDTO;
+export class CreateOwnerDTO extends CreateUserDTO {}
+
+export class CreateClientDTO extends CreateUserDTO {
+  @IsString()
+  @IsNotEmpty()
+  tradeRegister: string;
+}

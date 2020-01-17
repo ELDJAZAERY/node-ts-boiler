@@ -2,18 +2,17 @@ import { Express } from 'express';
 import { Controller } from '../shared';
 import { OwnerController, ClientController } from '../features/user';
 import { AuthController } from '../features/auth';
+import { PartnerController } from '../features/Partner';
 import authMiddleware from '../middlewares/auth';
-import { KeysController } from '../features/keys';
 
-const URL_PREFIX_V1 = '/dashboard/api/v1';
-const URL_PREFIX = URL_PREFIX_V1;
+const URL_PREFIX = '/api/v1';
 
 export default (app: Express): void => {
   const controllers: Controller[] = [
     new AuthController(),
     new OwnerController(),
     new ClientController(),
-    new KeysController()
+    new PartnerController()
   ];
 
   controllers.forEach(controller => {

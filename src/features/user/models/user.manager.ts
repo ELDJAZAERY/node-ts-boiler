@@ -38,7 +38,10 @@ export default class UserManager {
       if (isClient) {
         isClient.normalize();
         return { ...isClient, isOwner: false };
-      } else return undefined;
+      } else
+        return Promise.reject(
+          new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')
+        );
     }
   };
 
@@ -61,16 +64,17 @@ export default class UserManager {
   };
 
   static idValidator = async (identificator: String): Promise<boolean> => {
-    const user: IUser | undefined = await UserManager.getIUser(
-      identificator as string
-    );
-    return user === undefined
-      ? true
-      : Promise.reject(
-          new HttpException(
-            HttpStatusEnum.BAD_REQUEST,
-            'Identifier is already used'
-          )
-        );
+    try {
+      await UserManager.getIUser(identificator as string);
+
+      return Promise.reject(
+        new HttpException(
+          HttpStatusEnum.BAD_REQUEST,
+          'Identifier is already used'
+        )
+      );
+    } catch (e) {
+      return Promise.resolve(true);
+    }
   };
 }

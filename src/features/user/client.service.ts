@@ -1,4 +1,4 @@
-import CreateUserDTO from './dtos/create.user.dto';
+import { CreateClientDTO } from './dtos/create.user.dto';
 import UpdateUserDTO from './dtos/update.user.dto';
 
 import HttpException from '../../exceptions/httpException';
@@ -6,15 +6,22 @@ import { HttpStatusEnum } from '../../shared';
 import { Not } from 'typeorm';
 import Client from './models/client.model';
 import UserManager from './models/user.manager';
+import { PartnerService, Partner } from '../Partner';
 
 export default class ClientService {
   static createClient = async (
-    createUserDTO: CreateUserDTO
+    createClientDTO: CreateClientDTO
   ): Promise<Client> => {
+    await UserManager.idValidator(createClientDTO.identificator);
+
+    const partner: Partner = await PartnerService.getPartner(
+      createClientDTO.tradeRegister
+    );
+
+    let client: Client = new Client(partner);
+    client.preSave(createClientDTO);
+
     try {
-      await UserManager.idValidator(createUserDTO.identificator);
-      let client: Client = new Client();
-      client.preSave(createUserDTO);
       client = await client.save();
       return client;
     } catch {
@@ -51,8 +58,14 @@ export default class ClientService {
     return clients;
   };
 
-  static getClient = async (identificator: any): Promise<Client> => {
-    const client: Client | undefined = await Client.findOne({ identificator });
+  static getClient = async (
+    identificator: any,
+    eager?: boolean
+  ): Promise<Client> => {
+    const client: Client | undefined = await Client.findOne(
+      { identificator },
+      { loadEagerRelations: eager ? true : false }
+    );
 
     if (client) return client;
 

@@ -1,28 +1,34 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 
-import RoleEnum from '../enums/roles.Enum';
 import User from './user.model';
-import CreateUserDTO from '../dtos/create.user.dto';
+import { CreateClientDTO } from '../dtos/create.user.dto';
 import UpdateUserDTO from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
-import { Group } from '../../keys';
+import { Partner } from '../../Partner';
+import UserRolesEnum from '../enums/roles.Enum';
 
 @Entity({ name: 'client_access' })
 export default class Client extends User {
   static readonly TABLE_NAME = 'client_access';
 
-  @Column({ type: 'varchar', nullable: false, default: RoleEnum.BASIC })
-  role: RoleEnum;
+  @Column({ type: 'varchar', nullable: false, default: UserRolesEnum.BASIC })
+  role: UserRolesEnum;
 
-  @OneToMany(
-    type => Group,
-    group => group.client
+  @ManyToOne(
+    type => Partner,
+    partner => partner.clients,
+    { eager: true, nullable: false }
   )
-  groups: Group[];
+  partner: Partner;
 
-  preSave = (createUserDTO: CreateUserDTO): any => {
-    this.preSaveUser(createUserDTO);
-    this.role = createUserDTO.role;
+  constructor(partner: Partner) {
+    super();
+    this.partner = partner;
+  }
+
+  preSave = (createClientDTO: CreateClientDTO): any => {
+    this.preSaveUser(createClientDTO);
+    this.role = createClientDTO.role;
   };
 
   updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Client> => {

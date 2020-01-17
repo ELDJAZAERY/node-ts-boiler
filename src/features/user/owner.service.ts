@@ -1,4 +1,4 @@
-import CreateUserDTO from './dtos/create.user.dto';
+import { CreateOwnerDTO } from './dtos/create.user.dto';
 import UpdateUserDTO from './dtos/update.user.dto';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
@@ -7,11 +7,13 @@ import { Not } from 'typeorm';
 import UserManager from './models/user.manager';
 
 export default class OwnerService {
-  static createOwner = async (createUserDTO: CreateUserDTO): Promise<Owner> => {
+  static createOwner = async (
+    createOwnerDTO: CreateOwnerDTO
+  ): Promise<Owner> => {
     let owner: Owner = new Owner();
-    owner.preSave(createUserDTO);
+    owner.preSave(createOwnerDTO);
     try {
-      await UserManager.idValidator(createUserDTO.identificator);
+      await UserManager.idValidator(createOwnerDTO.identificator);
       owner = await owner.save();
       return owner;
     } catch {

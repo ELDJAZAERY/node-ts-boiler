@@ -16,7 +16,7 @@ import {
   Index
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
-import CreateUserDTO from '../dtos/create.user.dto';
+import { CreateUserDTO } from '../dtos/create.user.dto';
 import UpdateUserDTO from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
 import HttpException from '../../../exceptions/httpException';

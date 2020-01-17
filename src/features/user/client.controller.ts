@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { Controller, HttpStatusEnum } from '../../shared';
 import ClientService from './client.service';
-import CreateUserDTO from './dtos/create.user.dto';
+import { CreateClientDTO } from './dtos/create.user.dto';
 import UpdateUserDTO from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
 import { Client } from '.';
@@ -21,7 +21,7 @@ class ClientController implements Controller {
   initializeRoutes(): void {
     this.route.post(
       '/',
-      validationMiddleware(CreateUserDTO),
+      validationMiddleware(CreateClientDTO),
       // actionValidator(ActionRoleStratagies.SUPER),
       this.createClient
     );
@@ -62,9 +62,9 @@ class ClientController implements Controller {
   }
 
   async createClient(req: Request, res: Response): Promise<void> {
-    const createUserDTO: CreateUserDTO = req.body;
+    const createClientDTO: CreateClientDTO = req.body;
     const createdClient: Client = await ClientService.createClient(
-      createUserDTO
+      createClientDTO
     );
     res.status(HttpStatusEnum.CREATED).send(createdClient.normalize());
   }
