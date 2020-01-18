@@ -43,9 +43,10 @@ export default class Partner extends BaseEntity {
     this.isActive = isActive;
   }
 
-  normalize() {
+  normalize(): Partner {
     delete this.id;
     delete this.save;
     delete this.normalize;
+    return this;
   }
 }

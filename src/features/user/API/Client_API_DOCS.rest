@@ -17,15 +17,15 @@
 ##
 
 // Create User 
-POST /dashboard/api/v1/client/ HTTP/1.1
+POST /api/v1/client/ HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "cibra1",
-	"role":"Super admin",
+	"identificator": "cibra",
+	"role":"Client admin",
 	"password" : "pass",
 	"confirmPassword" : "pass",
     "designation": "Not Unic name",
@@ -33,13 +33,14 @@ identificator: {{connectedUser}}
 	"isRequestVisible" : true,
 	"isKeysVisible" : true,
 	"isKeysEditable" : true,
-	"isHistoricVisible" : true
+	"isHistoricVisible" : true,
+	"tradeRegister" : "12340"
 }
 
 ### 
 
 // get user profile
-GET /dashboard/api/v1/client/profile/{{identificator}} HTTP/1.1
+GET /api/v1/client/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
@@ -48,7 +49,7 @@ identificator: {{connectedUser}}
 ###
 
 // get all owners
-GET /dashboard/api/v1/client/ HTTP/1.1
+GET /api/v1/client/ HTTP/1.1
 Host: {{host}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
@@ -58,7 +59,7 @@ identificator: {{connectedUser}}
 
 // Update user Basic infos
 
-PUT /dashboard/api/v1/client/profile/{{identificator}} HTTP/1.1
+PUT /api/v1/client/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
 Authorization: {{Authorization_Token}}

@@ -18,7 +18,7 @@
 ##
 
 // Create User 
-POST /dashboard/api/v1/owner/ HTTP/1.1
+POST /api/v1/owner/ HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
 Authorization: {{Authorization_Token}}
@@ -43,7 +43,7 @@ identificator: {{connectedUser}}
 ### 
 
 // get user profile
-GET /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
+GET /api/v1/owner/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
@@ -54,7 +54,7 @@ identificator: {{connectedUser}}
 ###
 
 // get all owners
-GET /dashboard/api/v1/owner/ HTTP/1.1
+GET /api/v1/owner/ HTTP/1.1
 Host: {{host}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
@@ -66,7 +66,7 @@ identificator: {{connectedUser}}
 
 // Update user Basic infos
 
-PUT /dashboard/api/v1/owner/profile/{{identificator}} HTTP/1.1
+PUT /api/v1/owner/profile/{{identificator}} HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
 Authorization: {{Authorization_Token}}

@@ -3,11 +3,11 @@ import { IsString, IsBoolean, IsNotEmpty, IsDefined } from 'class-validator';
 export default class CreatePartnerDTO {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  tradeRegister: string;
 
   @IsString()
   @IsNotEmpty()
-  tradeRegister: string;
+  name: string;
 
   @IsString()
   @IsNotEmpty()

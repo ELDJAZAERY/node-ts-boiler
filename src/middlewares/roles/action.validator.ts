@@ -5,6 +5,7 @@ import UserRolesEnum from '../../features/user/enums/roles.Enum';
 import { IUser, Owner, Client } from '../../features/user';
 import ActionRoleEnum from './action.enum';
 import UserManager from '../../features/user/models/user.manager';
+import ClientService from '../../features/user/client.service';
 
 function actionValidator<T>(action: ActionRoleEnum): express.RequestHandler {
   return async (req: any, res: any, next: any): Promise<void> => {
@@ -44,7 +45,7 @@ const checkRole = async (
       return SelfishActionValidator(iUser, userConcernedByAction);
 
     case ActionRoleEnum.BASIC_OWNER:
-      return true;
+      return iUser && iUser.isOwner;
 
     case ActionRoleEnum.SUPER_CLIENT:
       return (
@@ -55,6 +56,12 @@ const checkRole = async (
         iUser.isRequestVisible &&
         iUser.isHistoricVisible
       );
+
+    case ActionRoleEnum.CLIENT_OR_BASIC_OWNER:
+      return await ClientOrBasicOwner(req);
+
+    case ActionRoleEnum.ONLY_CLIENT_HAVE_SAME_PARTNER:
+      return await OnlyClientWithSamePartner(req);
 
     case ActionRoleEnum.FETCH_KEYS:
       return iUser && iUser.isKeysVisible;
@@ -105,6 +112,25 @@ const AdminActionValidator = async (
     userConcerned.role !== UserRolesEnum.SUPER &&
     userConcerned.role !== UserRolesEnum.ADMIN
   );
+};
+
+const ClientOrBasicOwner = async (req: any): Promise<boolean> => {
+  const iUser: IUser = req.iUser;
+  return (iUser && iUser.isOwner) || (await OnlyClientWithSamePartner(req));
+};
+
+const OnlyClientWithSamePartner = async (req: any): Promise<boolean> => {
+  const iUser: IUser = req.iUser;
+  const client: Client = await ClientService.getClient(
+    iUser.identificator,
+    true
+  );
+  const { tradeRegister } = req.params || req.body;
+  try {
+    return client.partner.tradeRegister === tradeRegister;
+  } catch {
+    return false;
+  }
 };
 
 const SelfishActionValidator = (

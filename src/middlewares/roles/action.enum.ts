@@ -59,10 +59,25 @@ const enum ActionRoleEnum {
 
   /**
    * @_SUPER_CLIENT_ACTION
-   * Requier the @_CLIENT_ACCESS with @_ALL_Booleans_Roles
+   * Requier @_CLIENT_ADMIN Role and the @_CLIENT_ACCESS with @_ALL_Booleans_Roles
    *  ## PS: the cleint can't change his boolean roles any way
    */
   SUPER_CLIENT = 'Super Admin Client',
+
+  /**
+   * @_CLIENTS_WITH_SAME_PARTNER
+   * @_SUPER_ @_ADMIN_ @_BASIC_
+   * ## clients thats have the same partner
+   *
+   */
+  CLIENT_OR_BASIC_OWNER = 'Client or basic owner',
+
+  /**
+   * @_CLIENTS_WITH_SAME_PARTNER
+   * ## only clients thats have the same partner
+   *
+   */
+  ONLY_CLIENT_HAVE_SAME_PARTNER = 'Client have same Partner',
 
   /**
    * @_FETCH_KEYS__ACTION
