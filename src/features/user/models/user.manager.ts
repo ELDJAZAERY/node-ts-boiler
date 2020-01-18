@@ -12,6 +12,7 @@ import Client from './client.model';
 import { IUser } from '..';
 import HttpException from '../../../exceptions/httpException';
 import { HttpStatusEnum } from '../../../shared';
+import ClientService from '../client.service';
 
 export default class UserManager {
   /**
@@ -22,27 +23,36 @@ export default class UserManager {
    * ## IUSER OBject will injected in each request to know wich user is connected
    *
    */
-  static getIUser = async (
-    identificator: string
-  ): Promise<IUser | undefined> => {
+  static getIUser = async (identificator: string): Promise<IUser> => {
     const isOwnerUser: Owner | undefined = await Owner.findOne({
       identificator
     });
+
     if (isOwnerUser) {
       isOwnerUser.normalize();
       return { ...isOwnerUser, isOwner: true };
-    } else {
-      const isClient: Client | undefined = await Client.findOne({
-        identificator
-      });
-      if (isClient) {
-        isClient.normalize();
-        return { ...isClient, isOwner: false };
-      } else
-        return Promise.reject(
-          new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')
-        );
     }
+
+    const isClient: Client | undefined = await Client.findOne(
+      { identificator },
+      { loadEagerRelations: true }
+    );
+
+    if (isClient) {
+      isClient.normalize();
+      if (isClient.partner && isClient.partner.isActive)
+        return { ...isClient, isOwner: false };
+      return Promise.reject(
+        new HttpException(
+          HttpStatusEnum.BAD_REQUEST,
+          'The business partner assigned to this account is deactivated'
+        )
+      );
+    }
+
+    return Promise.reject(
+      new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')
+    );
   };
 
   static findOne = async (identificator: string): Promise<Owner | Client> => {
@@ -51,11 +61,19 @@ export default class UserManager {
       return ownerUser;
     }
 
-    const clientUser: Client | undefined = await Client.findOne({
-      identificator
-    });
+    const clientUser: Client | undefined = await Client.findOne(
+      { identificator },
+      { loadEagerRelations: true }
+    );
+
     if (clientUser) {
-      return clientUser;
+      if (clientUser.partner && clientUser.partner.isActive) return clientUser;
+      return Promise.reject(
+        new HttpException(
+          HttpStatusEnum.BAD_REQUEST,
+          'The business partner assigned to this account is deactivated'
+        )
+      );
     }
 
     return Promise.reject(

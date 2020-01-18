@@ -23,8 +23,8 @@ export default async (
       : 'invalide Token';
 
   const { identificator: idFromToken } = JWTGenerator.verify(token);
-  const iUser: IUser | undefined = await UserManager.getIUser(idFromToken);
-  if (iUser && idFromToken === idFromHeaders) {
+  const iUser: IUser = await UserManager.getIUser(idFromToken);
+  if (idFromToken === idFromHeaders) {
     (req as any).iUser = iUser;
     return next();
   }

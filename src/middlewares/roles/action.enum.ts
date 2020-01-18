@@ -65,12 +65,37 @@ const enum ActionRoleEnum {
   SUPER_CLIENT = 'Super Admin Client',
 
   /**
+   *
+   * @_SUPER_CLIENT_ACTION
+   * @_OR__
+   * @_SUPER_OWNER_ACTION
+   *
+   */
+  SUPER_CLIENT_OWNER = 'Super owner OR Super Admin Client',
+
+  /**
    * @_CLIENTS_WITH_SAME_PARTNER
    * @_SUPER_ @_ADMIN_ @_BASIC_
    * ## clients thats have the same partner
    *
    */
   CLIENT_OR_BASIC_OWNER = 'Client or basic owner',
+
+  /**
+   * @_SELFISH
+   * @_SUPER_ @_ADMIN_ @_BASIC_
+   * ## clients thats have the same partner
+   *
+   */
+  SELFISH_OR_BASIC_OWNER = 'SELFISH or basic owner',
+
+  /**
+   * @_SELFISH
+   * @_SUPER_
+   * ## clients thats have the same partner
+   *
+   */
+  SELFISH_OR_SUPER_OWNER = 'SELFISH or Super owner',
 
   /**
    * @_CLIENTS_WITH_SAME_PARTNER

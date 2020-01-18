@@ -7,6 +7,7 @@ import { Not } from 'typeorm';
 import Client from './models/client.model';
 import UserManager from './models/user.manager';
 import { PartnerService, Partner } from '../Partner';
+import { IUser } from '.';
 
 export default class ClientService {
   static createClient = async (
@@ -50,10 +51,20 @@ export default class ClientService {
     );
   };
 
-  static getAllClients = async (
-    identificator: string
-  ): Promise<Client[] | undefined> => {
-    let clients = await Client.find({ identificator: Not(identificator) });
+  static getAllClients = async (): Promise<Client[]> => {
+    let clients = await Client.find({ loadEagerRelations: false });
+    clients = clients.map(client => client.normalize());
+    return clients;
+  };
+
+  static getPartnerClient = async (
+    tradeRegister: string
+  ): Promise<Client[]> => {
+    let clients = await Client.getRepository()
+      .createQueryBuilder('client')
+      .leftJoin('client.partner', 'partner')
+      .where(`partner.tradeRegister = :tradeRegister`, { tradeRegister })
+      .getMany();
     clients = clients.map(client => client.normalize());
     return clients;
   };

@@ -54,6 +54,12 @@ export default class Client extends User {
 
   normalize = (): Client => {
     this.normalizeUser();
+    delete this.preSave;
+    delete this.updateBasicInfos;
+    delete this.updatePWD;
+    delete this.saveRefreshToken;
+    delete this.checkRefreshToken;
+    delete this.normalize;
     return this;
   };
 }

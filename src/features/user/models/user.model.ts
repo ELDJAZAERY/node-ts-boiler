@@ -163,22 +163,6 @@ export default abstract class User extends BaseEntity {
     return password === passDecrypted;
   };
 
-  protected normalizeUser = (): void => {
-    delete this.id;
-    delete this.password;
-    delete this.secretKey;
-    delete this.save;
-    delete this.preSaveUser;
-    delete this.updateBasicInfosUser;
-    delete this.updatePWDUser;
-    delete this.normalizeUser;
-    delete this.cryptePWD;
-    delete this.decryptPWD;
-    delete this.checkPWD;
-    delete this.checkRefreshTokenUser;
-    delete this.refreshTokens;
-  };
-
   protected saveRefreshTokenUser = (refreshToken: string): void => {
     this.refreshTokens.push(refreshToken);
   };
@@ -202,5 +186,22 @@ export default abstract class User extends BaseEntity {
 
   private decryptPWD = (): String => {
     return PwdCrypto.decrypt(this.password, this.secretKey);
+  };
+
+  protected normalizeUser = (): void => {
+    delete this.id;
+    delete this.password;
+    delete this.secretKey;
+    delete this.preSaveUser;
+    delete this.updateBasicInfosUser;
+    delete this.updatePWDUser;
+    delete this.cryptePWD;
+    delete this.decryptPWD;
+    delete this.checkPWD;
+    delete this.checkRefreshTokenUser;
+    delete this.refreshTokens;
+    delete this.saveRefreshTokenUser;
+    delete this.normalizeUser;
+    delete this.save;
   };
 }

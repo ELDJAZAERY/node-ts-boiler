@@ -5,13 +5,13 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = cibra1
+@identificator = cibra
 
 @Authorization_Token =  Bearer {{token}}
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiaWJyYSIsImlzT3duZXIiOnRydWUsInJvbGUiOiJTdXBlciBhZG1pbiIsImlzQWN0aXZhdGVkIjp0cnVlLCJpc1JlcXVlc3RWaXNpYmxlIjp0cnVlLCJpc0tleXNWaXNpYmxlIjp0cnVlLCJpc0tleXNFZGl0YWJsZSI6dHJ1ZSwiaXNIaXN0b3JpY1Zpc2libGUiOnRydWUsImlhdCI6MTU3ODc4NDUwOSwiZXhwIjoxNTc5Mzg5MzA5fQ.FIh5vH66T4jbdNijQ0ugTvuxtZI-Z5yaAk_ce_pidAQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhdG9yIjoiY2xpZW50NSIsImlzT3duZXIiOmZhbHNlLCJyb2xlIjoiQmFzaWMiLCJpc0FjdGl2YXRlZCI6dHJ1ZSwiaXNSZXF1ZXN0VmlzaWJsZSI6dHJ1ZSwiaXNLZXlzVmlzaWJsZSI6dHJ1ZSwiaXNLZXlzRWRpdGFibGUiOnRydWUsImlzSGlzdG9yaWNWaXNpYmxlIjp0cnVlLCJpYXQiOjE1NzkzODQxMjYsImV4cCI6MTU3OTk4ODkyNn0.dTYiOfGm8Lef8bhnc5V3jo0UhnSTAemZSnMvXg2KG6g
 
-@connectedUser = ibra
+@connectedUser = client5
 
 
 ##
@@ -24,8 +24,8 @@ Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "cibra",
-	"role":"Client admin",
+	"identificator": "client5",
+	"role":"Basic",
 	"password" : "pass",
 	"confirmPassword" : "pass",
     "designation": "Not Unic name",
@@ -34,7 +34,7 @@ identificator: {{connectedUser}}
 	"isKeysVisible" : true,
 	"isKeysEditable" : true,
 	"isHistoricVisible" : true,
-	"tradeRegister" : "12340"
+	"tradeRegister" : "12341"
 }
 
 ### 
@@ -48,8 +48,16 @@ identificator: {{connectedUser}}
 
 ###
 
-// get all owners
+// get all Clients
 GET /api/v1/client/ HTTP/1.1
+Host: {{host}}
+Authorization: {{Authorization_Token}}
+identificator: {{connectedUser}}
+
+
+###
+
+GET /api/v1/client/12341/accounts HTTP/1.1
 Host: {{host}}
 Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}

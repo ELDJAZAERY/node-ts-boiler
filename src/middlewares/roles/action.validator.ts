@@ -2,10 +2,9 @@ import * as express from 'express';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
 import UserRolesEnum from '../../features/user/enums/roles.Enum';
-import { IUser, Owner, Client } from '../../features/user';
+import { IUser, Owner, Client, User } from '../../features/user';
 import ActionRoleEnum from './action.enum';
 import UserManager from '../../features/user/models/user.manager';
-import ClientService from '../../features/user/client.service';
 
 function actionValidator<T>(action: ActionRoleEnum): express.RequestHandler {
   return async (req: any, res: any, next: any): Promise<void> => {
@@ -41,6 +40,7 @@ const checkRole = async (
       const permited = await AdminActionValidator(iUser, userConcernedByAction);
       return permited;
     }
+
     case ActionRoleEnum.SELFISH:
       return SelfishActionValidator(iUser, userConcernedByAction);
 
@@ -57,11 +57,20 @@ const checkRole = async (
         iUser.isHistoricVisible
       );
 
+    case ActionRoleEnum.SUPER_CLIENT_OWNER:
+      return SuperOwnerOrSuperClient(req);
+
     case ActionRoleEnum.CLIENT_OR_BASIC_OWNER:
-      return await ClientOrBasicOwner(req);
+      return ClientOrBasicOwner(req);
+
+    case ActionRoleEnum.SELFISH_OR_BASIC_OWNER:
+      return SelfishOrBasicOwner(req, userConcernedByAction);
+
+    case ActionRoleEnum.SELFISH_OR_SUPER_OWNER:
+      return SelfishOrSuperOwner(req, userConcernedByAction);
 
     case ActionRoleEnum.ONLY_CLIENT_HAVE_SAME_PARTNER:
-      return await OnlyClientWithSamePartner(req);
+      return OnlyClientWithSamePartner(req);
 
     case ActionRoleEnum.FETCH_KEYS:
       return iUser && iUser.isKeysVisible;
@@ -114,23 +123,54 @@ const AdminActionValidator = async (
   );
 };
 
-const ClientOrBasicOwner = async (req: any): Promise<boolean> => {
+const SuperOwnerOrSuperClient = (req: any): boolean => {
   const iUser: IUser = req.iUser;
-  return (iUser && iUser.isOwner) || (await OnlyClientWithSamePartner(req));
+  return (
+    iUser.role === UserRolesEnum.SUPER ||
+    (iUser.role === UserRolesEnum.CLIENT_ADMIN &&
+      OnlyClientWithSamePartner(req))
+  );
 };
 
-const OnlyClientWithSamePartner = async (req: any): Promise<boolean> => {
+const ClientOrBasicOwner = (req: any): boolean => {
   const iUser: IUser = req.iUser;
-  const client: Client = await ClientService.getClient(
-    iUser.identificator,
-    true
-  );
-  const { tradeRegister } = req.params || req.body;
+  return (iUser && iUser.isOwner) || OnlyClientWithSamePartner(req);
+};
+
+const OnlyClientWithSamePartner = (req: any): boolean => {
+  const iUser: IUser = req.iUser;
+  const tradeRegister = req.params.tradeRegister || req.body.tradeRegister;
   try {
-    return client.partner.tradeRegister === tradeRegister;
+    return (
+      !!iUser &&
+      !!iUser.partner &&
+      iUser.partner.tradeRegister === tradeRegister
+    );
   } catch {
     return false;
   }
+};
+
+const SelfishOrBasicOwner = (
+  req: any,
+  userConcernedByAction: string
+): boolean => {
+  const iUser: IUser = req.iUser;
+  return (
+    (iUser && iUser.isOwner) ||
+    SelfishActionValidator(iUser, userConcernedByAction)
+  );
+};
+
+const SelfishOrSuperOwner = (
+  req: any,
+  userConcernedByAction: string
+): boolean => {
+  const iUser: IUser = req.iUser;
+  return (
+    (iUser && iUser.isOwner && iUser.role === UserRolesEnum.SUPER) ||
+    SelfishActionValidator(iUser, userConcernedByAction)
+  );
 };
 
 const SelfishActionValidator = (

@@ -30,7 +30,7 @@ export default class AuthService {
     return Promise.reject(
       new HttpException(
         HttpStatusEnum.UNAUTHORIZED,
-        'The username or The password is incorrect, please contact your admin'
+        'The username or The password is incorrect'
       )
     );
   }

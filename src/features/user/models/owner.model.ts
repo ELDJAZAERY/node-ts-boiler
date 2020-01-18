@@ -41,6 +41,12 @@ export default class Owner extends User {
 
   normalize = (): Owner => {
     this.normalizeUser();
+    delete this.preSave;
+    delete this.updateBasicInfos;
+    delete this.updatePWD;
+    delete this.saveRefreshToken;
+    delete this.checkRefreshToken;
+    delete this.normalize;
     return this;
   };
 }

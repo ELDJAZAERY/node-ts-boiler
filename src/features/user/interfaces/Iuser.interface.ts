@@ -1,4 +1,5 @@
 import UserRolesEnum from '../enums/roles.Enum';
+import { Partner } from '../../Partner';
 
 export default interface IUser {
   identificator: String;
@@ -18,4 +19,6 @@ export default interface IUser {
   role: UserRolesEnum;
 
   isOwner: boolean;
+
+  partner?: Partner;
 }

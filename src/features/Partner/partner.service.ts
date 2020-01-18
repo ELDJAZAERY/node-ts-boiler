@@ -26,10 +26,11 @@ export default class GroupService {
     tradeRegister: string,
     createPartnerDTO: CreatePartnerDTO
   ) => {
-    const partner: Partner = await PartnerService.getPartner(tradeRegister);
-    partner.presave(createPartnerDTO);
+    let partner: Partner = await PartnerService.getPartner(tradeRegister);
     try {
-      return partner.save();
+      partner.presave(createPartnerDTO);
+      partner = await partner.save();
+      return partner;
     } catch {
       return Promise.reject(
         new HttpException(
