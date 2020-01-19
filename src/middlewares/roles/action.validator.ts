@@ -1,7 +1,9 @@
 import * as express from 'express';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
-import UserRolesEnum from '../../features/user/enums/roles.Enum';
+import UserRolesEnum, {
+  OwnerRoleEnum
+} from '../../features/user/enums/roles.Enum';
 import { IUser, Owner, Client, User } from '../../features/user';
 import ActionRoleEnum from './action.enum';
 import UserManager from '../../features/user/models/user.manager';
@@ -67,7 +69,7 @@ const checkRole = async (
       return SelfishOrBasicOwner(req, userConcernedByAction);
 
     case ActionRoleEnum.SELFISH_OR_SUPER_OWNER:
-      return SelfishOrSuperOwner(req, userConcernedByAction);
+      return await SelfishOrSuperOwner(req, userConcernedByAction);
 
     case ActionRoleEnum.ONLY_CLIENT_HAVE_SAME_PARTNER:
       return OnlyClientWithSamePartner(req);
@@ -118,8 +120,8 @@ const AdminActionValidator = async (
     iUser &&
     iUser.role === UserRolesEnum.ADMIN &&
     !!userConcerned &&
-    userConcerned.role !== UserRolesEnum.SUPER &&
-    userConcerned.role !== UserRolesEnum.ADMIN
+    userConcerned.role !== OwnerRoleEnum.SUPER &&
+    userConcerned.role !== OwnerRoleEnum.ADMIN
   );
 };
 
@@ -162,13 +164,20 @@ const SelfishOrBasicOwner = (
   );
 };
 
-const SelfishOrSuperOwner = (
+/**
+ * @_Super Owner canot checnge pwd of another @_Super Owner
+ */
+const SelfishOrSuperOwner = async (
   req: any,
   userConcernedByAction: string
-): boolean => {
+): Promise<boolean> => {
   const iUser: IUser = req.iUser;
+  const userConerned: IUser = await UserManager.getIUser(userConcernedByAction);
   return (
-    (iUser && iUser.isOwner && iUser.role === UserRolesEnum.SUPER) ||
+    (iUser &&
+      iUser.isOwner &&
+      iUser.role === UserRolesEnum.SUPER &&
+      userConerned.role !== UserRolesEnum.SUPER) ||
     SelfishActionValidator(iUser, userConcernedByAction)
   );
 };

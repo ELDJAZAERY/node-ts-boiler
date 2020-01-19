@@ -1,4 +1,7 @@
-import UserRolesEnum from '../enums/roles.Enum';
+import UserRolesEnum, {
+  OwnerRoleEnum,
+  ClientRoleEnum
+} from '../enums/roles.Enum';
 import { Partner } from '../../Partner';
 
 export default interface IUser {
@@ -16,7 +19,7 @@ export default interface IUser {
 
   isHistoricVisible: boolean;
 
-  role: UserRolesEnum;
+  role: OwnerRoleEnum | ClientRoleEnum | UserRolesEnum;
 
   isOwner: boolean;
 

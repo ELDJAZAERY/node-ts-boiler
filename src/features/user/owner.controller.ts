@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { Controller, HttpStatusEnum } from '../../shared';
 import OwnerService from './owner.service';
 import { CreateOwnerDTO } from './dtos/create.user.dto';
-import UpdateUserDTO from './dtos/update.user.dto';
+import { UpdateOwnerDTO } from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
 import { Owner } from '.';
 import UpdateUserPwdDTO from './dtos/update.user.password.dto';
@@ -26,7 +26,7 @@ class OwnerController implements Controller {
     );
     this.route.get(
       '/profile/:identificator/',
-      // actionValidator(ActionRoleStratagies.SELFISH),
+      actionValidator(ActionRoleEnum.BASIC_OWNER),
       this.getOwner
     );
     this.route.post(
@@ -37,14 +37,14 @@ class OwnerController implements Controller {
     );
     this.route.put(
       '/profile/:identificator',
-      validationMiddleware(UpdateUserDTO),
-      actionValidator(ActionRoleEnum.SELFISH),
+      validationMiddleware(UpdateOwnerDTO),
+      actionValidator(ActionRoleEnum.SUPER_OWNER),
       this.updateOwner
     );
     this.route.put(
       '/profile/:identificator/pwd/change',
       validationMiddleware(UpdateUserPwdDTO),
-      actionValidator(ActionRoleEnum.SELFISH),
+      actionValidator(ActionRoleEnum.SELFISH_OR_SUPER_OWNER),
       this.updatePwd
     );
   }
@@ -68,7 +68,7 @@ class OwnerController implements Controller {
   }
 
   async updateOwner(req: Request, res: Response): Promise<void> {
-    const updateUserDTO: UpdateUserDTO = req.body;
+    const updateUserDTO: UpdateOwnerDTO = req.body;
     const { identificator } = req.params;
     const user: Owner = await OwnerService.updateOwner(
       identificator,
@@ -77,7 +77,12 @@ class OwnerController implements Controller {
     res.status(HttpStatusEnum.SUCCESS).send(user.normalize());
   }
 
-  async updatePwd(req: Request, res: Response): Promise<void> {}
+  async updatePwd(req: Request, res: Response): Promise<void> {
+    const { identificator } = req.params;
+    const updateUserPwdDTO: UpdateUserPwdDTO = req.body;
+    await OwnerService.updateOwnerPWD(identificator, updateUserPwdDTO);
+    res.sendStatus(HttpStatusEnum.SUCCESS_NO_CONTENT);
+  }
 }
 
 export default OwnerController;

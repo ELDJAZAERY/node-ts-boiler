@@ -2,9 +2,9 @@ import { Request, Response, Router } from 'express';
 import { Controller, HttpStatusEnum } from '../../shared';
 import ClientService from './client.service';
 import { CreateClientDTO } from './dtos/create.user.dto';
-import UpdateUserDTO from './dtos/update.user.dto';
+import { UpdateClientDTO } from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
-import { Client, IUser } from '.';
+import { Client } from '.';
 import UpdateUserPwdDTO from './dtos/update.user.password.dto';
 import ActionRoleEnum from '../../middlewares/roles/action.enum';
 import actionValidator from '../../middlewares/roles/action.validator';
@@ -42,14 +42,14 @@ class ClientController implements Controller {
     );
     this.route.put(
       '/profile/:identificator',
-      validationMiddleware(UpdateUserDTO),
+      validationMiddleware(UpdateClientDTO),
       actionValidator(ActionRoleEnum.SUPER_CLIENT_OWNER),
       this.updateClient
     );
     this.route.put(
       '/profile/:identificator/pwd/change',
       validationMiddleware(UpdateUserPwdDTO),
-      actionValidator(ActionRoleEnum.SELFISH),
+      actionValidator(ActionRoleEnum.SELFISH_OR_SUPER_OWNER),
       this.updatePwd
     );
   }
@@ -80,7 +80,7 @@ class ClientController implements Controller {
   }
 
   async updateClient(req: Request, res: Response): Promise<void> {
-    const updateUserDTO: UpdateUserDTO = req.body;
+    const updateUserDTO: UpdateClientDTO = req.body;
     const { identificator } = req.params;
     const user: Client = await ClientService.updateClient(
       identificator,
@@ -89,7 +89,12 @@ class ClientController implements Controller {
     res.status(HttpStatusEnum.SUCCESS).send(user.normalize());
   }
 
-  async updatePwd(req: Request, res: Response): Promise<void> {}
+  async updatePwd(req: Request, res: Response): Promise<void> {
+    const { identificator } = req.params;
+    const updateUserPwdDTO: UpdateUserPwdDTO = req.body;
+    await ClientService.updateClientPWD(identificator, updateUserPwdDTO);
+    res.sendStatus(HttpStatusEnum.SUCCESS_NO_CONTENT);
+  }
 }
 
 export default ClientController;

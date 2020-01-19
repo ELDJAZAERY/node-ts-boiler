@@ -1,10 +1,11 @@
 import { CreateOwnerDTO } from './dtos/create.user.dto';
-import UpdateUserDTO from './dtos/update.user.dto';
+import { UpdateOwnerDTO } from './dtos/update.user.dto';
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
 import Owner from './models/owner.model';
 import { Not } from 'typeorm';
 import UserManager from './models/user.manager';
+import UpdateUserPwdDTO from './dtos/update.user.password.dto';
 
 export default class OwnerService {
   static createOwner = async (
@@ -28,7 +29,7 @@ export default class OwnerService {
 
   static updateOwner = async (
     identificator: string,
-    updateUserDTO: UpdateUserDTO
+    updateUserDTO: UpdateOwnerDTO
   ): Promise<Owner> => {
     let owner: Owner | undefined = await Owner.findOne({ identificator });
 
@@ -54,6 +55,22 @@ export default class OwnerService {
     const owner: Owner | undefined = await Owner.findOne({ identificator });
 
     if (owner) return owner;
+
+    return Promise.reject(
+      new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')
+    );
+  };
+
+  static updateOwnerPWD = async (
+    identificator: string,
+    updateUserPwdDTO: UpdateUserPwdDTO
+  ): Promise<Owner> => {
+    let owner: Owner | undefined = await Owner.findOne({ identificator });
+
+    if (owner) {
+      owner = await owner.updatePWD(updateUserPwdDTO);
+      return owner;
+    }
 
     return Promise.reject(
       new HttpException(HttpStatusEnum.BAD_REQUEST, 'User not found')

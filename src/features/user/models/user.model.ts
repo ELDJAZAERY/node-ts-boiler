@@ -17,7 +17,7 @@ import {
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 import { CreateUserDTO } from '../dtos/create.user.dto';
-import UpdateUserDTO from '../dtos/update.user.dto';
+import { UpdateUserDTO } from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
 import HttpException from '../../../exceptions/httpException';
 import { HttpStatusEnum } from '../../../shared';
@@ -143,12 +143,15 @@ export default abstract class User extends BaseEntity {
     this.isRequestVisible = isRequestVisible;
   };
 
-  protected updatePWDUser = (updateUserPwdDTO: UpdateUserPwdDTO): any => {
+  protected updatePWDUser = async (
+    updateUserPwdDTO: UpdateUserPwdDTO
+  ): Promise<boolean> => {
     const { password, newPassword, confirmPassword } = updateUserPwdDTO;
     const oldPwd = this.decryptPWD();
     if (newPassword === confirmPassword && password === oldPwd) {
       this.password = newPassword;
       this.cryptePWD();
+      return true;
     } else
       return Promise.reject(
         new HttpException(

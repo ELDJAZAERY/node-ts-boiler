@@ -5,9 +5,9 @@ import {
   IsEmail,
   IsEnum
 } from 'class-validator';
-import UserRolesEnum from '../enums/roles.Enum';
+import { OwnerRoleEnum, ClientRoleEnum } from '../enums/roles.Enum';
 
-class UpdateUserDTO {
+export class UpdateUserDTO {
   @IsString()
   @IsNotEmpty()
   designation: string;
@@ -33,4 +33,14 @@ class UpdateUserDTO {
   isRequestVisible: boolean;
 }
 
-export default UpdateUserDTO;
+export class UpdateOwnerDTO extends UpdateUserDTO {
+  @IsNotEmpty()
+  @IsEnum(OwnerRoleEnum)
+  role: OwnerRoleEnum;
+}
+
+export class UpdateClientDTO extends UpdateUserDTO {
+  @IsNotEmpty()
+  @IsEnum(ClientRoleEnum)
+  role: ClientRoleEnum;
+}

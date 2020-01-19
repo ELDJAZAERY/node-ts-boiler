@@ -1,5 +1,5 @@
 import { CreateClientDTO } from './dtos/create.user.dto';
-import UpdateUserDTO from './dtos/update.user.dto';
+import { UpdateClientDTO } from './dtos/update.user.dto';
 
 import HttpException from '../../exceptions/httpException';
 import { HttpStatusEnum } from '../../shared';
@@ -7,7 +7,7 @@ import { Not } from 'typeorm';
 import Client from './models/client.model';
 import UserManager from './models/user.manager';
 import { PartnerService, Partner } from '../Partner';
-import { IUser } from '.';
+import UpdateUserPwdDTO from './dtos/update.user.password.dto';
 
 export default class ClientService {
   static createClient = async (
@@ -37,7 +37,7 @@ export default class ClientService {
 
   static updateClient = async (
     identificator: string,
-    updateUserDTO: UpdateUserDTO
+    updateUserDTO: UpdateClientDTO
   ): Promise<Client> => {
     let client: Client | undefined = await Client.findOne({ identificator });
 
@@ -79,6 +79,25 @@ export default class ClientService {
     );
 
     if (client) return client;
+
+    return Promise.reject(
+      new HttpException(HttpStatusEnum.BAD_REQUEST, 'Client not found')
+    );
+  };
+
+  static updateClientPWD = async (
+    identificator: string,
+    updateUserPwdDTO: UpdateUserPwdDTO
+  ): Promise<Client> => {
+    let client: Client | undefined = await Client.findOne(
+      { identificator },
+      { loadEagerRelations: false }
+    );
+
+    if (client) {
+      client = await client.updatePWD(updateUserPwdDTO);
+      return client;
+    }
 
     return Promise.reject(
       new HttpException(HttpStatusEnum.BAD_REQUEST, 'Client not found')

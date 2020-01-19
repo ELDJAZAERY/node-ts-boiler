@@ -2,17 +2,17 @@ import { Entity, Column, ManyToOne } from 'typeorm';
 
 import User from './user.model';
 import { CreateClientDTO } from '../dtos/create.user.dto';
-import UpdateUserDTO from '../dtos/update.user.dto';
+import { UpdateClientDTO } from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
 import { Partner } from '../../Partner';
-import UserRolesEnum from '../enums/roles.Enum';
+import { ClientRoleEnum } from '../enums/roles.Enum';
 
 @Entity({ name: 'client_access' })
 export default class Client extends User {
   static readonly TABLE_NAME = 'client_access';
 
-  @Column({ type: 'varchar', nullable: false, default: UserRolesEnum.BASIC })
-  role: UserRolesEnum;
+  @Column({ type: 'varchar', nullable: false, default: ClientRoleEnum.BASIC })
+  role: ClientRoleEnum;
 
   @ManyToOne(
     type => Partner,
@@ -31,13 +31,14 @@ export default class Client extends User {
     this.role = createClientDTO.role;
   };
 
-  updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Client> => {
+  updateBasicInfos = (updateUserDTO: UpdateClientDTO): Promise<Client> => {
     this.updateBasicInfosUser(updateUserDTO);
+    this.role = updateUserDTO.role;
     return this.save();
   };
 
-  updatePWD = (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Client> => {
-    this.updatePWDUser(updateUserPwdDTO);
+  updatePWD = async (updateUserPwdDTO: UpdateUserPwdDTO): Promise<Client> => {
+    await this.updatePWDUser(updateUserPwdDTO);
     return this.save();
   };
 

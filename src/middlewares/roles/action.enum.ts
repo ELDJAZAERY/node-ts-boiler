@@ -84,7 +84,6 @@ const enum ActionRoleEnum {
   /**
    * @_SELFISH
    * @_SUPER_ @_ADMIN_ @_BASIC_
-   * ## clients thats have the same partner
    *
    */
   SELFISH_OR_BASIC_OWNER = 'SELFISH or basic owner',
@@ -92,8 +91,8 @@ const enum ActionRoleEnum {
   /**
    * @_SELFISH
    * @_SUPER_
-   * ## clients thats have the same partner
    *
+   *  * @_Super Owner canot do this action in another @_Super Owner
    */
   SELFISH_OR_SUPER_OWNER = 'SELFISH or Super owner',
 

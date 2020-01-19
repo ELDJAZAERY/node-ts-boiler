@@ -2,24 +2,25 @@ import { Entity, Column } from 'typeorm';
 
 import User from './user.model';
 import { CreateOwnerDTO } from '../dtos/create.user.dto';
-import UpdateUserDTO from '../dtos/update.user.dto';
+import { UpdateOwnerDTO } from '../dtos/update.user.dto';
 import UpdateUserPwdDTO from '../dtos/update.user.password.dto';
-import UserRolesEnum from '../enums/roles.Enum';
+import { OwnerRoleEnum } from '../enums/roles.Enum';
 
 @Entity({ name: 'owner_access' })
 export default class Owner extends User {
   static readonly TABLE_NAME = 'owner_access';
 
-  @Column({ type: 'varchar', nullable: false, default: UserRolesEnum.BASIC })
-  role: UserRolesEnum;
+  @Column({ type: 'varchar', nullable: false, default: OwnerRoleEnum.BASIC })
+  role: OwnerRoleEnum;
 
   preSave = (createOwnerDTO: CreateOwnerDTO): any => {
     this.preSaveUser(createOwnerDTO);
     this.role = createOwnerDTO.role;
   };
 
-  updateBasicInfos = (updateUserDTO: UpdateUserDTO): Promise<Owner> => {
+  updateBasicInfos = (updateUserDTO: UpdateOwnerDTO): Promise<Owner> => {
     this.updateBasicInfosUser(updateUserDTO);
+    this.role = updateUserDTO.role;
     return this.save();
   };
 

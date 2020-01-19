@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsAlphanumeric } from 'class-validator';
 
 export default class UpdateUserPwdDTO {
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   password: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   newPassword: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   confirmPassword: string;
 }

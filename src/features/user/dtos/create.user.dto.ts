@@ -1,5 +1,11 @@
-import { IsString, IsNotEmpty, IsBoolean, IsEnum } from 'class-validator';
-import UserRolesEnum from '../enums/roles.Enum';
+import {
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+  IsEnum,
+  IsAlphanumeric
+} from 'class-validator';
+import { OwnerRoleEnum, ClientRoleEnum } from '../enums/roles.Enum';
 
 export class CreateUserDTO {
   @IsNotEmpty()
@@ -31,21 +37,25 @@ export class CreateUserDTO {
   isHistoricVisible: boolean;
 
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   password: string;
 
   @IsNotEmpty()
   @IsString()
   confirmPassword: string;
-
-  @IsNotEmpty()
-  @IsEnum(UserRolesEnum)
-  role: UserRolesEnum;
 }
 
-export class CreateOwnerDTO extends CreateUserDTO {}
+export class CreateOwnerDTO extends CreateUserDTO {
+  @IsNotEmpty()
+  @IsEnum(OwnerRoleEnum)
+  role: OwnerRoleEnum;
+}
 
 export class CreateClientDTO extends CreateUserDTO {
+  @IsNotEmpty()
+  @IsEnum(ClientRoleEnum)
+  role: ClientRoleEnum;
+
   @IsString()
   @IsNotEmpty()
   tradeRegister: string;
