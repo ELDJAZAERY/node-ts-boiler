@@ -5,7 +5,7 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = ibra2
+@identificator = ibra8
 
 @Authorization_Token =  Bearer {{token}}
 
@@ -25,7 +25,7 @@ Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "ibra7",
+	"identificator": "ibra8",
 	"role":"Basic",
 	"password" : "pass",
 	"confirmPassword" : "pass",

@@ -60,10 +60,10 @@ const checkRole = async (
       );
 
     case ActionRoleEnum.SUPER_CLIENT_OWNER:
-      return SuperOwnerOrSuperClient(req);
+      return await SuperOwnerOrSuperClient(req);
 
     case ActionRoleEnum.CLIENT_OR_BASIC_OWNER:
-      return ClientOrBasicOwner(req);
+      return await ClientOrBasicOwner(req);
 
     case ActionRoleEnum.SELFISH_OR_BASIC_OWNER:
       return SelfishOrBasicOwner(req, userConcernedByAction);
@@ -72,7 +72,7 @@ const checkRole = async (
       return await SelfishOrSuperOwner(req, userConcernedByAction);
 
     case ActionRoleEnum.ONLY_CLIENT_HAVE_SAME_PARTNER:
-      return OnlyClientWithSamePartner(req);
+      return await OnlyClientWithSamePartner(req);
 
     case ActionRoleEnum.FETCH_KEYS:
       return iUser && iUser.isKeysVisible;
@@ -109,6 +109,17 @@ const extractUserConcernedByAction = (req: any): string => {
   return (identificatorFromBody || identificatorFromParams) as string;
 };
 
+const getConcernedTradRegister = async (req: any): Promise<string> => {
+  let tradeRegister = req.params.tradeRegister || req.body.tradeRegister;
+  if (!tradeRegister) {
+    const userConcernedByAction: string = extractUserConcernedByAction(req);
+    const iUser: IUser = await UserManager.getIUser(userConcernedByAction);
+    tradeRegister = iUser.partner ? iUser.partner.tradeRegister : '';
+  }
+
+  return tradeRegister;
+};
+
 const AdminActionValidator = async (
   iUser: IUser,
   userConcernedByAction: string
@@ -118,31 +129,33 @@ const AdminActionValidator = async (
   );
   return (
     iUser &&
-    iUser.role === UserRolesEnum.ADMIN &&
-    !!userConcerned &&
-    userConcerned.role !== OwnerRoleEnum.SUPER &&
-    userConcerned.role !== OwnerRoleEnum.ADMIN
+    iUser.isOwner &&
+    (iUser.role === UserRolesEnum.CLIENT_ADMIN ||
+      (iUser.role === UserRolesEnum.ADMIN &&
+        !!userConcerned &&
+        userConcerned.role !== OwnerRoleEnum.SUPER &&
+        userConcerned.role !== OwnerRoleEnum.ADMIN))
   );
 };
 
-const SuperOwnerOrSuperClient = (req: any): boolean => {
+const SuperOwnerOrSuperClient = async (req: any): Promise<boolean> => {
   const iUser: IUser = req.iUser;
   return (
     iUser.role === UserRolesEnum.SUPER ||
     (iUser.role === UserRolesEnum.CLIENT_ADMIN &&
-      OnlyClientWithSamePartner(req))
+      (await OnlyClientWithSamePartner(req)))
   );
 };
 
-const ClientOrBasicOwner = (req: any): boolean => {
+const ClientOrBasicOwner = async (req: any): Promise<boolean> => {
   const iUser: IUser = req.iUser;
-  return (iUser && iUser.isOwner) || OnlyClientWithSamePartner(req);
+  return (iUser && iUser.isOwner) || (await OnlyClientWithSamePartner(req));
 };
 
-const OnlyClientWithSamePartner = (req: any): boolean => {
-  const iUser: IUser = req.iUser;
-  const tradeRegister = req.params.tradeRegister || req.body.tradeRegister;
+const OnlyClientWithSamePartner = async (req: any): Promise<boolean> => {
   try {
+    const tradeRegister: string = await getConcernedTradRegister(req);
+    const iUser: IUser = req.iUser;
     return (
       !!iUser &&
       !!iUser.partner &&

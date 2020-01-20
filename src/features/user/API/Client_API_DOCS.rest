@@ -5,7 +5,7 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = cibra1
+@identificator = client3
 
 @Authorization_Token =  Bearer {{token}}
 
@@ -24,7 +24,7 @@ Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "client5",
+	"identificator": "client6",
 	"role":"Basic",
 	"password" : "pass",
 	"confirmPassword" : "pass",
@@ -34,7 +34,7 @@ identificator: {{connectedUser}}
 	"isKeysVisible" : true,
 	"isKeysEditable" : true,
 	"isHistoricVisible" : true,
-	"tradeRegister" : "12341"
+	"tradeRegister" : "12340"
 }
 
 ### 
@@ -74,7 +74,7 @@ Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"role" : "Super admin",
+	"role" : "Basic",
     "designation": "Not Unic name",
 	"isActivated" : true,
 	"isRequestVisible" : true,
