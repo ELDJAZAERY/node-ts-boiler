@@ -62,6 +62,9 @@ const checkRole = async (
     case ActionRoleEnum.SUPER_CLIENT_OR_SUPE_OWNER:
       return await SuperOwnerOrSuperClient(req);
 
+    case ActionRoleEnum.SUPER_CLIENT_OR_BASIC_OWNER:
+      return await ownerOrSuperClient(req);
+
     case ActionRoleEnum.CLIENT_OR_BASIC_OWNER:
       return await ClientOrBasicOwner(req);
 
@@ -144,6 +147,15 @@ const SuperOwnerOrSuperClient = async (req: any): Promise<boolean> => {
   const iUser: IUser = req.iUser;
   return (
     iUser.role === UserRolesEnum.SUPER ||
+    (iUser.role === UserRolesEnum.CLIENT_ADMIN &&
+      (await OnlyClientWithSamePartner(req)))
+  );
+};
+
+const ownerOrSuperClient = async (req: any): Promise<boolean> => {
+  const iUser: IUser = req.iUser;
+  return (
+    iUser.isOwner ||
     (iUser.role === UserRolesEnum.CLIENT_ADMIN &&
       (await OnlyClientWithSamePartner(req)))
   );

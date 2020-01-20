@@ -5,7 +5,7 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = client7
+@identificator = cibra2
 
 @Authorization_Token =  Bearer {{token}}
 

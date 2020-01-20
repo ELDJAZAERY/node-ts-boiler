@@ -32,7 +32,7 @@ class ClientController implements Controller {
     );
     this.route.get(
       '/:tradeRegister/accounts',
-      actionValidator(ActionRoleEnum.CLIENT_OR_BASIC_OWNER),
+      actionValidator(ActionRoleEnum.SUPER_CLIENT_OR_BASIC_OWNER),
       this.getPartnerClients
     );
     this.route.get(
