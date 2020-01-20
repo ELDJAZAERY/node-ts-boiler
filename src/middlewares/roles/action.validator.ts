@@ -59,7 +59,7 @@ const checkRole = async (
         iUser.isHistoricVisible
       );
 
-    case ActionRoleEnum.SUPER_CLIENT_OWNER:
+    case ActionRoleEnum.SUPER_CLIENT_OR_SUPE_OWNER:
       return await SuperOwnerOrSuperClient(req);
 
     case ActionRoleEnum.CLIENT_OR_BASIC_OWNER:
@@ -110,6 +110,8 @@ const extractUserConcernedByAction = (req: any): string => {
 };
 
 const getConcernedTradRegister = async (req: any): Promise<string> => {
+  // should check tradRegister from body first in case of create query
+  // then we check from the userConcerned
   let tradeRegister = req.params.tradeRegister || req.body.tradeRegister;
   if (!tradeRegister) {
     const userConcernedByAction: string = extractUserConcernedByAction(req);

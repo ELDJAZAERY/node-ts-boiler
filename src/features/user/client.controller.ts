@@ -22,7 +22,7 @@ class ClientController implements Controller {
     this.route.post(
       '/',
       validationMiddleware(CreateClientDTO),
-      actionValidator(ActionRoleEnum.SUPER_CLIENT_OWNER),
+      actionValidator(ActionRoleEnum.SUPER_CLIENT_OR_SUPE_OWNER),
       this.createClient
     );
     this.route.get(
@@ -43,7 +43,7 @@ class ClientController implements Controller {
     this.route.put(
       '/profile/:identificator',
       validationMiddleware(UpdateClientDTO),
-      actionValidator(ActionRoleEnum.SUPER_CLIENT_OWNER),
+      actionValidator(ActionRoleEnum.SUPER_CLIENT_OR_SUPE_OWNER),
       this.updateClient
     );
     this.route.put(

@@ -5,7 +5,7 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-@identificator = client3
+@identificator = client7
 
 @Authorization_Token =  Bearer {{token}}
 
@@ -24,7 +24,7 @@ Authorization: {{Authorization_Token}}
 identificator: {{connectedUser}}
 
 {
-	"identificator": "client6",
+	"identificator": "client8",
 	"role":"Basic",
 	"password" : "pass",
 	"confirmPassword" : "pass",
@@ -34,7 +34,7 @@ identificator: {{connectedUser}}
 	"isKeysVisible" : true,
 	"isKeysEditable" : true,
 	"isHistoricVisible" : true,
-	"tradeRegister" : "12340"
+	"tradeRegister" : "12341"
 }
 
 ### 
