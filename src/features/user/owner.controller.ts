@@ -51,8 +51,8 @@ class OwnerController implements Controller {
 
   async getAllOwner(req: Request, res: Response): Promise<void> {
     const { identificator } = (req as any).iUser;
-    const users = await OwnerService.getAllOwners(identificator);
-    res.status(HttpStatusEnum.SUCCESS).send(users);
+    const owners = await OwnerService.getAllOwners(identificator);
+    res.status(HttpStatusEnum.SUCCESS).send(owners);
   }
 
   async getOwner(req: Request, res: Response): Promise<void> {

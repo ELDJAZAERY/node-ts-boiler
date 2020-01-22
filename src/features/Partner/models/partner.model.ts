@@ -4,10 +4,14 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  Index
+  Index,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Client } from '../../user';
 import CreatePartnerDTO from '../dto/create.partner.dto';
+import Request from '../../request/models/request.model';
+import Key from '../../keys/models/keys.model';
 
 @Entity({ name: 'client' })
 export default class Partner extends BaseEntity {
@@ -34,6 +38,24 @@ export default class Partner extends BaseEntity {
     client => client.partner
   )
   clients: Client[];
+
+  @OneToMany(
+    type => Request,
+    request => request.partner
+  )
+  requests: Request[];
+
+  @OneToMany(
+    type => Key,
+    key => key.partner
+  )
+  keys: Key[];
+
+  @CreateDateColumn()
+  readonly createdAt: Date;
+
+  @UpdateDateColumn()
+  readonly updatedAt: Date;
 
   presave(createPartnerDTO: CreatePartnerDTO) {
     const { name, tradeRegister, category, isActive } = createPartnerDTO;
