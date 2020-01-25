@@ -4,23 +4,22 @@ import {
   Column,
   UpdateDateColumn,
   CreateDateColumn,
-  ManyToOne
+  ManyToOne,
+  Entity
 } from 'typeorm';
 import RequestType from './request.type.model';
 import { Partner } from '../../Partner';
 
-export default class Request extends BaseEntity {
+Entity();
+export default class GISRequest extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ type: Date })
-  date: Date;
 
   @Column()
   latitude: number;
 
   @Column()
-  logitude: number;
+  longitude: number;
 
   @ManyToOne(
     () => RequestType,
@@ -41,4 +40,17 @@ export default class Request extends BaseEntity {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  constructor(
+    latitude: number,
+    longitude: number,
+    type: RequestType,
+    partner: Partner
+  ) {
+    super();
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.type = type;
+    this.partner = partner;
+  }
 }

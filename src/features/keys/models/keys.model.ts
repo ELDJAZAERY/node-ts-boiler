@@ -1,6 +1,13 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  Entity
+} from 'typeorm';
 import { Partner } from '../../Partner';
 
+@Entity()
 export default class Key extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

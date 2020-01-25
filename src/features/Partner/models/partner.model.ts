@@ -12,8 +12,9 @@ import { Client } from '../../user';
 import CreatePartnerDTO from '../dto/create.partner.dto';
 import Request from '../../request/models/request.model';
 import Key from '../../keys/models/keys.model';
+import { Consommation } from '../../request';
 
-@Entity({ name: 'client' })
+@Entity({ name: 'partner' })
 export default class Partner extends BaseEntity {
   static readonly TABLE_NAME = 'client';
 
@@ -50,6 +51,12 @@ export default class Partner extends BaseEntity {
     key => key.partner
   )
   keys: Key[];
+
+  @OneToMany(
+    type => Key,
+    key => key.partner
+  )
+  dailyConsommations: Consommation[];
 
   @CreateDateColumn()
   readonly createdAt: Date;

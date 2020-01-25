@@ -8,11 +8,25 @@ import Client from './models/client.model';
 import UserManager from './models/user.manager';
 import { PartnerService, Partner } from '../Partner';
 import UpdateUserPwdDTO from './dtos/update.user.password.dto';
+import { IUser } from '.';
+import { ClientRoleEnum, OwnerRoleEnum } from './enums/roles.Enum';
 
 export default class ClientService {
   static createClient = async (
-    createClientDTO: CreateClientDTO
+    createClientDTO: CreateClientDTO,
+    iUser: IUser
   ): Promise<Client> => {
+    if (
+      createClientDTO.role === ClientRoleEnum.CLIENT_ADMIN &&
+      (!iUser.isOwner || iUser.role !== OwnerRoleEnum.SUPER)
+    )
+      return Promise.reject(
+        new HttpException(
+          HttpStatusEnum.BAD_REQUEST,
+          'Permission denied, you cannot create a client administrator account'
+        )
+      );
+
     await UserManager.idValidator(createClientDTO.identificator);
 
     const partner: Partner = await PartnerService.getPartner(

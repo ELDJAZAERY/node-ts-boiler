@@ -4,10 +4,11 @@ import ClientService from './client.service';
 import { CreateClientDTO } from './dtos/create.user.dto';
 import { UpdateClientDTO } from './dtos/update.user.dto';
 import validationMiddleware from '../../middlewares/dataValidator';
-import { Client } from '.';
+import { Client, IUser } from '.';
 import UpdateUserPwdDTO from './dtos/update.user.password.dto';
 import ActionRoleEnum from '../../middlewares/roles/action.enum';
 import actionValidator from '../../middlewares/roles/action.validator';
+import { ClientRoleEnum } from './enums/roles.Enum';
 
 class ClientController implements Controller {
   path = '/client';
@@ -73,8 +74,10 @@ class ClientController implements Controller {
 
   async createClient(req: Request, res: Response): Promise<void> {
     const createClientDTO: CreateClientDTO = req.body;
+    const iUser: IUser = (req as any).iUser;
     const createdClient: Client = await ClientService.createClient(
-      createClientDTO
+      createClientDTO,
+      iUser
     );
     res.status(HttpStatusEnum.CREATED).send(createdClient.normalize());
   }
