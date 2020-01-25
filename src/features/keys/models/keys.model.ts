@@ -3,7 +3,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  Entity
+  Entity,
+  Index
 } from 'typeorm';
 import { Partner } from '../../Partner';
 
@@ -12,7 +13,8 @@ export default class Key extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
+  @Index({ unique: true })
   key: string;
 
   @ManyToOne(
@@ -21,4 +23,16 @@ export default class Key extends BaseEntity {
     { eager: true, nullable: false }
   )
   partner: Partner;
+
+  constructor(key: string, partner: Partner) {
+    super();
+    this.key = key;
+    this.partner = partner;
+  }
+
+  update = async (key: string): Promise<Key> => {
+    this.key = key;
+    const updated: Key = await this.save();
+    return updated;
+  };
 }

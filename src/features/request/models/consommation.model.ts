@@ -13,7 +13,7 @@ export default class Consommation extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true, nullable: false })
   @Index({ unique: true })
   date: string; // day,month,year,partnerId
 
